@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AlertTriangle } from 'lucide-react';
 
-function MobileLayout({ children, bottomNav, title }) {
+function MobileLayout({ children, bottomNav, title, warningMessage }) {
   const navigate = useNavigate();
 
   return (
@@ -17,7 +18,14 @@ function MobileLayout({ children, bottomNav, title }) {
         </div>
       </header>
 
-      <main className="pt-20 px-4 pb-4">
+      {warningMessage && (
+        <div className="fixed top-16 left-0 right-0 bg-yellow-400 text-yellow-900 px-4 py-2 text-sm font-medium flex items-center justify-center space-x-2 z-40">
+          <AlertTriangle className="w-4 h-4" />
+          <span>{warningMessage}</span>
+        </div>
+      )}
+
+      <main className={`pt-20 px-4 pb-4 ${warningMessage ? 'mt-8' : ''}`}>
         {children}
       </main>
 
