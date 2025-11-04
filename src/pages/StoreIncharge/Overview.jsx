@@ -20,8 +20,8 @@ function Overview() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-taiba-gray mb-2">Store Order Management</h2>
-        <p className="text-taiba-gray">Track and handover orders to delivery partners</p>
+        <h2 className="text-xl font-bold text-taiba-gray mb-1">Store Order Management</h2>
+        <p className="text-sm text-taiba-gray">Track and handover orders to delivery partners</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

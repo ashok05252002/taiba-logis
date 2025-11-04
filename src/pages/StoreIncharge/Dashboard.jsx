@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import WebLayout from '../../components/Layout/WebLayout';
 import { LayoutDashboard, Package, Truck } from 'lucide-react';
 import Overview from './Overview';
@@ -15,27 +15,7 @@ function StoreInchargeDashboard() {
     <WebLayout
       title="Store Incharge"
       userRole="Store Operations"
-      navigation={
-        <>
-          {navigation.map((item) => (
-            <NavLink
-              key={item.name}
-              to={`/store-incharge/${item.path}`}
-              end={item.path === ''}
-              className={({ isActive }) =>
-                `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-taiba-blue text-white'
-                    : 'text-taiba-gray hover:bg-gray-100'
-                }`
-              }
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.name}</span>
-            </NavLink>
-          ))}
-        </>
-      }
+      navItems={navigation}
     >
       <Routes>
         <Route path="/" element={<Overview />} />

@@ -1,14 +1,25 @@
 import React from 'react';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import WebLayout from '../../components/Layout/WebLayout';
-import { LayoutDashboard, MapPin, FileText, Users } from 'lucide-react';
+import { LayoutDashboard, MapPin, FileText, Users, Truck, ShieldAlert, Bell, History } from 'lucide-react';
 import Overview from './Overview';
+import ZoneManagement from './ZoneManagement';
+import DeliveryOversight from './DeliveryOversight';
+import DriverManagement from './DriverManagement';
+import EscalationManagement from './EscalationManagement';
+import Reports from './Reports';
+import Notifications from './Notifications';
+import AuditLogs from './AuditLogs';
 
 const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '' },
+  { name: 'Order & Delivery Monitoring', icon: Truck, path: 'oversight' },
   { name: 'Zone Management', icon: MapPin, path: 'zones' },
   { name: 'Driver Management', icon: Users, path: 'drivers' },
+  { name: 'Escalations', icon: ShieldAlert, path: 'escalations' },
   { name: 'Reports', icon: FileText, path: 'reports' },
+  { name: 'Notifications', icon: Bell, path: 'notifications' },
+  { name: 'Audit Logs', icon: History, path: 'audit-logs' },
 ];
 
 function DeliveryAdminDashboard() {
@@ -16,33 +27,17 @@ function DeliveryAdminDashboard() {
     <WebLayout
       title="Delivery Admin"
       userRole="Admin - Operations"
-      navigation={
-        <>
-          {navigation.map((item) => (
-            <NavLink
-              key={item.name}
-              to={`/delivery-admin/${item.path}`}
-              end={item.path === ''}
-              className={({ isActive }) =>
-                `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-taiba-blue text-white'
-                    : 'text-taiba-gray hover:bg-gray-100'
-                }`
-              }
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.name}</span>
-            </NavLink>
-          ))}
-        </>
-      }
+      navItems={navigation}
     >
       <Routes>
         <Route path="/" element={<Overview />} />
-        <Route path="/zones" element={<div className="card"><p className="text-taiba-gray">Zone management section under development...</p></div>} />
-        <Route path="/drivers" element={<div className="card"><p className="text-taiba-gray">Driver management section under development...</p></div>} />
-        <Route path="/reports" element={<div className="card"><p className="text-taiba-gray">Reports section under development...</p></div>} />
+        <Route path="/oversight" element={<DeliveryOversight />} />
+        <Route path="/zones" element={<ZoneManagement />} />
+        <Route path="/drivers" element={<DriverManagement />} />
+        <Route path="/escalations" element={<EscalationManagement />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/audit-logs" element={<AuditLogs />} />
       </Routes>
     </WebLayout>
   );
