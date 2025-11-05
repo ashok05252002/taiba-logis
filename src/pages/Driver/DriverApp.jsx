@@ -53,6 +53,18 @@ function DriverApp() {
     setIsLoggedIn(true);
     navigate('/driver');
   };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    // Reset all state to default
+    setDriverStatus('Offline');
+    setShiftHistory([]);
+    setAvailableOrders([]);
+    setCurrentOrder(null);
+    setCompletedOrders([]);
+    setAppWarning(null);
+    navigate('/');
+  };
   
   const handleUpdateProfile = (updatedProfile) => {
     setDriverProfile(updatedProfile);
@@ -160,7 +172,7 @@ function DriverApp() {
         />
         <Route path="/orders" element={<OrderHistory orders={completedOrders} />} />
         <Route path="/shift" element={<ShiftPage history={shiftHistory} />} />
-        <Route path="/profile" element={<ProfilePage profile={driverProfile} onUpdateProfile={handleUpdateProfile} />} />
+        <Route path="/profile" element={<ProfilePage profile={driverProfile} onUpdateProfile={handleUpdateProfile} onLogout={handleLogout} />} />
       </Routes>
     </MobileLayout>
   );

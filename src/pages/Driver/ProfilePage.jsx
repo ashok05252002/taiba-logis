@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { User, Smartphone, Mail, Car, Settings, Bell, Languages, Phone, MessageSquare, LifeBuoy } from 'lucide-react';
+import { User, Smartphone, Mail, Car, Settings, Bell, Languages, Phone, MessageSquare, LifeBuoy, LogOut } from 'lucide-react';
 import ToggleSwitch from '../../components/common/ToggleSwitch';
 import EditProfileModal from './components/EditProfileModal';
 
-function ProfilePage({ profile, onUpdateProfile }) {
+function ProfilePage({ profile, onUpdateProfile, onLogout }) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [settings, setSettings] = useState({ notifications: true, language: 'English' });
 
@@ -73,6 +73,17 @@ function ProfilePage({ profile, onUpdateProfile }) {
                             <span className="text-sm font-medium text-taiba-gray">Create Support Ticket</span>
                         </button>
                     </div>
+                </div>
+
+                {/* Logout Button */}
+                <div className="mt-8">
+                    <button 
+                        onClick={onLogout} 
+                        className="w-full flex items-center justify-center space-x-2 py-3 bg-red-50 text-red-600 rounded-lg font-semibold hover:bg-red-100 transition-colors"
+                    >
+                        <LogOut className="w-5 h-5" />
+                        <span>Logout</span>
+                    </button>
                 </div>
             </div>
             <EditProfileModal
