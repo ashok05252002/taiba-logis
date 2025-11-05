@@ -32,7 +32,7 @@ function WebLayout({ children, navItems, title, userRole }) {
               {isMobileSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
             <img 
-              src="https://i.ibb.co/7JhXfK9/taiba-logo.png" 
+              src="public/Images/taiba-pharmacy-new (1).png" 
               alt="Taiba" 
               className="h-10 object-contain"
             />

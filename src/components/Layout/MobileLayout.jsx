@@ -12,7 +12,7 @@ function MobileLayout({ children, bottomNav, warningMessage, cartCount = 0 }) {
         <div className="px-4 py-3 flex items-center justify-between">
           <StoreSelector />
           <img 
-            src="https://i.ibb.co/7JhXfK9/taiba-logo.png" 
+            src="public/Images/taiba-pharmacy-new (1).png" 
             alt="Taiba" 
             className="h-10 object-contain absolute left-1/2 -translate-x-1/2"
           />
