@@ -12,7 +12,8 @@ function DataTable({ columns, data, itemsPerPage = 10, getRowClassName }) {
   const currentData = data.slice(startIndex, endIndex);
 
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden">
+    // Removed overflow-hidden to ensure action menus are always visible
+    <div className="bg-white rounded-xl shadow-md">
       <div className="p-4 border-b border-gray-200">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
           <div className="relative flex-1 max-w-md">

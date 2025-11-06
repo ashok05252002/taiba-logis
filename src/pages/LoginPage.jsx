@@ -32,7 +32,7 @@ function LoginPage() {
             
             <div className="z-10">
                 <img 
-                    src="public/Images/taiba-pharmacy-new (1).png" 
+                    src="https://i.ibb.co/7JhXfK9/taiba-logo.png" 
                     alt="Taiba Pharmacy Logo" 
                     className="h-16 brightness-0 invert"
                 />

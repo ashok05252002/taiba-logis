@@ -10,6 +10,7 @@ import EscalationManagement from './EscalationManagement';
 import Reports from './Reports';
 import Notifications from './Notifications';
 import AuditLogs from './AuditLogs';
+import OrderDetailPage from '../shared/OrderDetailPage';
 
 const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '' },
@@ -23,6 +24,13 @@ const navigation = [
 ];
 
 function DeliveryAdminDashboard() {
+  // This is a placeholder for a real state management solution
+  const handleAssignment = (orderId, driver) => {
+    console.log(`Assignment for ${orderId} confirmed with Driver: ${driver}. State update would happen here.`);
+  };
+
+  const dummyDrivers = ['Driver #12', 'Driver #07', 'Driver #21', 'Driver #03', 'Driver #33', 'Driver #45'];
+
   return (
     <WebLayout
       title="Delivery Admin"
@@ -32,6 +40,15 @@ function DeliveryAdminDashboard() {
       <Routes>
         <Route path="/" element={<Overview />} />
         <Route path="/oversight" element={<DeliveryOversight />} />
+        <Route 
+          path="/oversight/:orderId" 
+          element={
+            <OrderDetailPage 
+              onConfirmAssignment={handleAssignment} 
+              drivers={dummyDrivers}
+            />
+          } 
+        />
         <Route path="/zones" element={<ZoneManagement />} />
         <Route path="/drivers" element={<DriverManagement />} />
         <Route path="/escalations" element={<EscalationManagement />} />

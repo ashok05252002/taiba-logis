@@ -35,7 +35,7 @@ function DriverLogin({ onLogin }) {
         <div className="h-[720px] flex flex-col">
             <div className="bg-gradient-to-br from-taiba-blue to-taiba-purple p-8 text-white text-center">
                  <img 
-                    src="public/Images/taiba-pharmacy-new (1).png" 
+                    src="https://i.ibb.co/7JhXfK9/taiba-logo.png" 
                     alt="Taiba" 
                     className="h-12 object-contain mx-auto mb-4 brightness-0 invert"
                 />

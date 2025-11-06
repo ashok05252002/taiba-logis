@@ -1,177 +1,203 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DataTable from '../../components/Tables/DataTable';
-import { MoreVertical, AlertTriangle } from 'lucide-react';
+import { MoreVertical, User, Truck, Eye, UserPlus, Edit, Plus } from 'lucide-react';
 import OverrideAssignmentModal from './oversight/OverrideAssignmentModal';
-import AuditTrailModal from './oversight/AuditTrailModal';
+import CreateOrderModal from '../shared/CreateOrderModal';
+import { allDeliveries, allDrivers } from '../../data/mockData';
 
-const initialDeliveries = [
-    { id: 'ORD551', customer: 'Hassan Ali', zone: 'North', admin: 'Ahmed Ali', driver: 'Driver #12', eta: '15 min', status: 'In Transit', auditTrail: [{ action: 'Created', timestamp: '10:30 AM' }, { action: 'Assigned to Driver #12', timestamp: '10:32 AM' }] },
-    { id: 'ORD552', customer: 'Aisha Bakr', zone: 'Central', admin: 'Yusuf Ahmed', driver: 'Driver #07', eta: '28 min', status: 'Delayed', auditTrail: [{ action: 'Created', timestamp: '11:00 AM' }] },
-    { id: 'ORD553', customer: 'Omar Farooq', zone: 'South', admin: 'Sara Abdullah', driver: 'Driver #21', eta: '5 min', status: 'In Transit', auditTrail: [{ action: 'Created', timestamp: '11:15 AM' }] },
-    { id: 'ORD554', customer: 'Fatima Zahra', zone: 'East', admin: 'Mohammed Khan', driver: 'Unassigned', eta: 'N/A', status: 'Pending', auditTrail: [{ action: 'Created', timestamp: '11:30 AM' }] },
-    { id: 'ORD555', customer: 'Ali Murtaza', zone: 'West', admin: 'Sara Abdullah', driver: 'Driver #03', eta: 'N/A', status: 'Delivered', auditTrail: [{ action: 'Created', timestamp: '09:00 AM' }, { action: 'Delivered', timestamp: '09:45 AM' }] },
-];
-
-const escalations = [
-    { id: 'ESC001', zone: 'North Zone', issue: 'High delay rate (25%)', reportedBy: 'Ahmed Ali', timestamp: '45m ago', status: 'Pending' },
-    { id: 'ESC002', zone: 'Central Zone', issue: 'Driver shortage reported', reportedBy: 'Yusuf Ahmed', timestamp: '2h ago', status: 'Pending' },
-    { id: 'ESC003', zone: 'API Failure', issue: 'Google Maps API not responding', reportedBy: 'System', timestamp: '3h ago', status: 'Investigating' },
+const tabs = [
+    { id: 'all', name: 'All' },
+    { id: 'confirm', name: 'To Confirm' },
+    { id: 'unassigned', name: 'Unassigned' },
+    { id: 'assigned', name: 'Assigned' },
+    { id: 'progress', name: 'In Progress' },
+    { id: 'done', name: 'Done' },
+    { id: 'cancelled', name: 'Cancelled' },
 ];
 
 const zones = ['North', 'South', 'East', 'West', 'Central'];
-const admins = ['Ahmed Ali', 'Sara Abdullah', 'Yusuf Ahmed', 'Mohammed Khan'];
-const drivers = ['Driver #12', 'Driver #07', 'Driver #21', 'Driver #03', 'Driver #33', 'Driver #45'];
+
+const StatusBadge = ({ status }) => {
+    const statusConfig = {
+        'To Confirm': 'bg-yellow-100 text-yellow-800', 'Pending': 'bg-orange-100 text-orange-800',
+        'Unassigned': 'bg-orange-100 text-orange-800', 'Assigned': 'bg-blue-100 text-blue-800',
+        'In Progress': 'bg-indigo-100 text-indigo-800', 'In Transit': 'bg-indigo-100 text-indigo-800',
+        'Delayed': 'bg-red-100 text-red-800', 'Done': 'bg-green-100 text-green-800',
+        'Delivered': 'bg-green-100 text-green-800', 'Cancelled': 'bg-gray-200 text-gray-800',
+        'Failed': 'bg-red-100 text-red-800',
+    };
+    const className = statusConfig[status] || 'bg-gray-100 text-gray-800';
+    return <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${className}`}>{status}</span>;
+};
 
 function DeliveryOversight() {
-    const [activeTab, setActiveTab] = useState('deliveries');
-    const [deliveries, setDeliveries] = useState(initialDeliveries);
+    const [activeTab, setActiveTab] = useState('all');
+    const [deliveries, setDeliveries] = useState(allDeliveries);
     const [selectedDelivery, setSelectedDelivery] = useState(null);
-    const [modalState, setModalState] = useState({ override: false, audit: false });
+    const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [openActionMenu, setOpenActionMenu] = useState(null);
     const actionMenuRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (actionMenuRef.current && !actionMenuRef.current.contains(event.target)) {
-                setOpenActionMenu(null);
-            }
+            if (actionMenuRef.current && !actionMenuRef.current.contains(event.target)) setOpenActionMenu(null);
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const openModal = (modal, delivery) => {
+    const openAssignModal = (delivery) => {
         setSelectedDelivery(delivery);
-        setModalState(prev => ({ ...prev, [modal]: true }));
+        setIsAssignModalOpen(true);
         setOpenActionMenu(null);
     };
 
-    const closeModal = () => {
-        setModalState({ override: false, audit: false });
-        setSelectedDelivery(null);
+    const handleCreateOrder = (newOrder) => {
+        setDeliveries(prev => [newOrder, ...prev]);
+        setIsCreateModalOpen(false);
     };
-    
+
     const handleReassignment = (deliveryId, newZone, newDriver) => {
         setDeliveries(prev => prev.map(d => 
             d.id === deliveryId 
-            ? { ...d, zone: newZone, driver: newDriver, status: 'In Transit' } 
+            ? { ...d, zone: newZone, driver: newDriver, status: 'Assigned' } 
             : d
         ));
-        closeModal();
+        setIsAssignModalOpen(false);
     };
 
+    const getFilteredDeliveries = () => {
+        switch (activeTab) {
+            case 'confirm': return deliveries.filter(d => d.status === 'To Confirm');
+            case 'unassigned': return deliveries.filter(d => d.driver === 'Unassigned');
+            case 'assigned': return deliveries.filter(d => d.status === 'Assigned');
+            case 'progress': return deliveries.filter(d => ['In Transit', 'Delayed', 'In Progress'].includes(d.status));
+            case 'done': return deliveries.filter(d => d.status === 'Delivered');
+            case 'cancelled': return deliveries.filter(d => ['Failed', 'Cancelled'].includes(d.status));
+            default: return deliveries;
+        }
+    };
+    
     const columns = [
-        { header: 'Order ID', accessor: 'id' },
-        { header: 'Customer', accessor: 'customer' },
-        { header: 'Zone', accessor: 'zone' },
-        { header: 'Driver', accessor: 'driver' },
-        { header: 'ETA', accessor: 'eta' },
         {
-            header: 'Status', accessor: 'status',
+            header: 'Order',
             render: (row) => (
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    row.status === 'In Transit' ? 'bg-blue-100 text-blue-800' :
-                    row.status === 'Delayed' ? 'bg-red-100 text-red-800' :
-                    row.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                    'bg-gray-100 text-gray-800'
-                }`}>
-                    {row.status}
+                <div>
+                    <p className="font-bold">{row.id}</p>
+                    <p className="text-xs text-gray-500">{row.deliveryType}</p>
+                    {row.status === 'Cancelled' && row.cancellationReason && (
+                        <div className="mt-1">
+                            <p className="text-xs font-semibold text-red-600">Reason: {row.cancellationReason}</p>
+                            <p className="text-xs text-red-500 max-w-[200px] whitespace-normal">"{row.cancellationComments}"</p>
+                        </div>
+                    )}
+                </div>
+            )
+        },
+        { header: 'Status', render: (row) => <StatusBadge status={row.status} /> },
+        {
+            header: 'Source',
+            render: (row) => (
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${row.source === 'Manual' ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800'}`}>
+                    {row.source}
                 </span>
-            ),
+            )
         },
         {
-            header: 'Actions', accessor: 'actions',
+            header: 'Customer & Driver',
+            render: (row) => (
+                <div>
+                    <p className="flex items-center space-x-1"><User className="w-3 h-3 text-gray-400"/><span>{row.customer}</span></p>
+                    <p className="flex items-center space-x-1 text-xs text-gray-500"><Truck className="w-3 h-3 text-gray-400"/><span>{row.driver}</span></p>
+                </div>
+            )
+        },
+        {
+            header: 'Order Date',
+            render: (row) => (
+                <div>
+                    <p>{new Date(row.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-500">{new Date(row.createdAt).toLocaleTimeString()}</p>
+                </div>
+            )
+        },
+        {
+            header: 'Timings',
+            render: (row) => {
+                const durationMinutes = parseInt(row.duration.match(/\d+/)?.[0] || 0);
+                const isHours = row.duration.includes('h');
+                const isOvertime = isHours || durationMinutes > 30;
+                const durationColor = isOvertime ? 'text-red-500' : 'text-green-500';
+                return (
+                    <div>
+                        <p>{row.timeRange}</p>
+                        <p className={`text-xs font-bold ${durationColor}`}>Duration: {row.duration}</p>
+                    </div>
+                );
+            }
+        },
+        {
+            header: 'Actions',
             render: (row) => (
                 <div className="relative">
                     <button onClick={() => setOpenActionMenu(openActionMenu === row.id ? null : row.id)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                         <MoreVertical className="w-5 h-5" />
                     </button>
                     {openActionMenu === row.id && (
-                        <div ref={actionMenuRef} className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-10">
-                            <button onClick={() => openModal('override', row)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                <span>Override Assignment</span>
+                        <div ref={actionMenuRef} className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-30">
+                            <button onClick={() => navigate(`/super-admin/oversight/${row.id}`)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
+                                <Eye className="w-4 h-4" /><span>View Details</span>
                             </button>
-                            <button onClick={() => openModal('audit', row)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                <span>View Audit Trail</span>
-                            </button>
+                            {row.driver === 'Unassigned' ? (
+                                <button onClick={() => openAssignModal(row)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
+                                    <UserPlus className="w-4 h-4" /><span>Assign Driver</span>
+                                </button>
+                            ) : (
+                                <button onClick={() => openAssignModal(row)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
+                                    <Edit className="w-4 h-4" /><span>Reassign/Override</span>
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>
-            ),
-        },
+            )
+        }
     ];
 
     return (
         <>
             <div className="space-y-6">
-                <div>
-                    <h2 className="text-xl font-bold text-taiba-gray mb-1">Delivery Operations Oversight</h2>
-                    <p className="text-sm text-taiba-gray">Monitor all deliveries and handle escalations across the network.</p>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                    <div className="border-b border-gray-200">
-                        <div className="flex space-x-8 px-6">
-                            <button onClick={() => setActiveTab('deliveries')} className={`py-4 px-2 font-medium border-b-2 transition-colors ${activeTab === 'deliveries' ? 'border-taiba-blue text-taiba-blue' : 'border-transparent text-taiba-gray'}`}>
-                                Live Deliveries
-                            </button>
-                            <button onClick={() => setActiveTab('escalations')} className={`py-4 px-2 font-medium border-b-2 transition-colors relative ${activeTab === 'escalations' ? 'border-taiba-blue text-taiba-blue' : 'border-transparent text-taiba-gray'}`}>
-                                Escalations
-                                <span className="absolute top-3 -right-2 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">{escalations.length}</span>
-                            </button>
-                        </div>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                    <div>
+                        <h2 className="text-xl font-bold text-taiba-gray mb-1">Delivery Operations Oversight</h2>
+                        <p className="text-sm text-taiba-gray">Monitor all deliveries and handle escalations across the network.</p>
                     </div>
-
-                    {activeTab === 'deliveries' && (
-                        <>
-                            <div className="p-4 border-b">
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <input type="text" placeholder="Search by Order ID or Customer" className="input-field" />
-                                    <select className="input-field"><option value="">All Zones</option>{zones.map(z => <option key={z}>{z}</option>)}</select>
-                                    <select className="input-field"><option value="">All Admins</option>{admins.map(a => <option key={a}>{a}</option>)}</select>
-                                    <select className="input-field"><option value="">All Statuses</option><option>Pending</option><option>In Transit</option><option>Delayed</option><option>Delivered</option></select>
-                                </div>
-                            </div>
-                            <DataTable columns={columns} data={deliveries} />
-                        </>
-                    )}
-
-                    {activeTab === 'escalations' && (
-                        <div className="p-6 space-y-4">
-                            {escalations.map(e => (
-                                <div key={e.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-orange-200 bg-orange-50 rounded-lg">
-                                    <div className="flex items-start space-x-4">
-                                        <AlertTriangle className="w-6 h-6 text-orange-500 mt-1 flex-shrink-0" />
-                                        <div>
-                                            <p className="font-bold text-taiba-gray">{e.issue}</p>
-                                            <p className="text-sm text-taiba-gray">Zone: {e.zone} | Reported by: {e.reportedBy}</p>
-                                            <p className="text-xs text-gray-500">{e.timestamp}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-2 mt-4 md:mt-0">
-                                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">{e.status}</span>
-                                        <button className="btn-primary text-sm">Resolve</button>
-                                    </div>
-                                </div>
+                    <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center space-x-2 btn-primary px-6 py-2.5">
+                        <Plus className="w-5 h-5" />
+                        <span>New Manual Order</span>
+                    </button>
+                </div>
+                <div className="bg-white rounded-xl shadow-md">
+                    <div className="border-b border-gray-200">
+                        <div className="flex space-x-1 sm:space-x-4 px-2 sm:px-4 overflow-x-auto no-scrollbar">
+                            {tabs.map((tab) => (
+                                <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`py-4 px-3 font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id ? 'border-taiba-blue text-taiba-blue' : 'border-transparent text-taiba-gray hover:text-taiba-blue'}`}>
+                                    {tab.name}
+                                </button>
                             ))}
                         </div>
-                    )}
+                    </div>
+                    <DataTable columns={columns} data={getFilteredDeliveries()} />
                 </div>
             </div>
-
-            <OverrideAssignmentModal
-                isOpen={modalState.override}
-                onClose={closeModal}
-                delivery={selectedDelivery}
-                zones={zones}
-                drivers={drivers}
-                onConfirm={handleReassignment}
-            />
-            
-            <AuditTrailModal
-                isOpen={modalState.audit}
-                onClose={closeModal}
-                delivery={selectedDelivery}
+            <OverrideAssignmentModal isOpen={isAssignModalOpen} onClose={() => setIsAssignModalOpen(false)} delivery={selectedDelivery} zones={zones} drivers={allDrivers} onConfirm={handleReassignment} />
+            <CreateOrderModal 
+                isOpen={isCreateModalOpen} 
+                onClose={() => setIsCreateModalOpen(false)} 
+                onCreateOrder={handleCreateOrder} 
             />
         </>
     );
