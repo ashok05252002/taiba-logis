@@ -1,114 +1,107 @@
 import React from 'react';
-import { MoreVertical, User, Truck, MapPin, Circle, Eye, UserPlus, Edit, History, Briefcase } from 'lucide-react';
+import { Ban, User, MapPin } from 'lucide-react';
 
-// Status Badge Component
 const StatusBadge = ({ status }) => {
     const statusConfig = {
-        'To Confirm': 'bg-yellow-100 text-yellow-800',
-        'Pending': 'bg-orange-100 text-orange-800',
-        'Unassigned': 'bg-orange-100 text-orange-800',
-        'Assigned': 'bg-blue-100 text-blue-800',
-        'In Progress': 'bg-indigo-100 text-indigo-800',
-        'In Transit': 'bg-indigo-100 text-indigo-800',
-        'Delayed': 'bg-red-100 text-red-800',
-        'Done': 'bg-green-100 text-green-800',
-        'Delivered': 'bg-green-100 text-green-800',
-        'Cancelled': 'bg-gray-200 text-gray-800',
-        'Failed': 'bg-red-100 text-red-800',
+        'Assigned': 'bg-[#E5904D] text-white', // Orange-ish
+        'Done': 'bg-[#8F95A3] text-white', // Grey
+        'In Progress': 'bg-[#5CB8A7] text-white', // Teal/Green
+        'To Confirm': 'bg-purple-500 text-white',
+        'Unassigned': 'bg-blue-500 text-white',
+        'Cancelled': 'bg-red-500 text-white',
     };
 
-    const className = statusConfig[status] || 'bg-gray-100 text-gray-800';
+    const className = statusConfig[status] || 'bg-gray-400 text-white';
+    
     return (
-        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${className}`}>
+        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${className}`}>
             {status}
         </span>
     );
 };
 
-const DeliveryListItem = ({ delivery, onMenuToggle, isMenuOpen, menuRef, onActionClick, onNavigate }) => {
+const DeliveryListItem = ({ delivery, isSelected, onSelect, onClick }) => {
     
     const getDurationColor = (duration) => {
         if (duration.includes('h')) return 'text-red-500';
-        return 'text-green-500';
+        return 'text-green-600';
     };
 
     return (
-        // Added relative and conditional z-index to fix menu visibility
-        <div className={`p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors relative ${isMenuOpen ? 'z-10' : ''}`}>
-            {/* Top section with time and location */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                {/* Left Column */}
-                <div className="flex items-center space-x-4">
-                    <div className="flex-1 space-y-1">
-                        <div className="flex items-center flex-wrap space-x-2 text-sm text-taiba-gray">
-                            <span>Today | {delivery.timeRange} |</span>
-                            <span className={`font-bold ${getDurationColor(delivery.duration)}`}>{delivery.duration}</span>
-                            <Truck className="w-5 h-5 text-taiba-blue" />
-                        </div>
-                        <div className="flex items-center space-x-2 text-sm text-taiba-gray">
-                            <Briefcase className="w-4 h-4" />
-                            <span>{delivery.deliveryType}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Column */}
-                <div className="flex items-center space-x-4">
-                     <div className="flex-1 space-y-1 text-sm text-taiba-gray">
-                        <div className="flex items-center space-x-2">
-                            <Circle className="w-2 h-2 fill-current text-gray-400" />
-                            <span className="font-semibold">{delivery.source}</span>
-                        </div>
-                        <div className="flex items-start space-x-2">
-                            <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                            <span>{delivery.destination}</span>
-                        </div>
-                    </div>
+        <div 
+            className={`flex items-center p-3 border-b border-gray-100 hover:bg-blue-50 transition-colors cursor-pointer group ${isSelected ? 'bg-blue-50' : 'bg-white'}`}
+            onClick={onClick}
+        >
+            {/* Column 1: Checkbox & Icon */}
+            <div className="flex items-center space-x-3 w-14 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                <input 
+                    type="checkbox" 
+                    checked={!!isSelected}
+                    onChange={() => onSelect(delivery.id)}
+                    className="w-4 h-4 rounded border-gray-300 text-taiba-blue focus:ring-taiba-blue cursor-pointer" 
+                />
+                <div className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-300">
+                    <Ban className="w-4 h-4" />
                 </div>
             </div>
 
-            {/* Bottom section with customer, driver, status, and actions */}
-            <div className="pt-3 border-t border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
-                <div className="flex items-center flex-wrap gap-x-6 gap-y-2 text-sm">
-                    <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4 text-taiba-purple" />
-                        <span className="text-taiba-gray">Customer: <span className="font-semibold">{delivery.customer}</span></span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Truck className="w-4 h-4 text-taiba-purple" />
-                        <span className="text-taiba-gray">Driver: <span className="font-semibold">{delivery.driver}</span></span>
-                    </div>
+            {/* Column 2: ID & Title */}
+            <div className="w-56 flex-shrink-0 pr-4">
+                <h4 className="font-bold text-gray-800 text-sm truncate" title={delivery.title}>{delivery.title}</h4>
+                <p className="text-xs text-gray-500 flex items-center mt-0.5">
+                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-1.5"></span>
+                    ID {delivery.id}
+                </p>
+            </div>
+
+            {/* Column 3: Status */}
+            <div className="w-28 flex-shrink-0">
+                <StatusBadge status={delivery.status} />
+            </div>
+
+            {/* Column 4: Time & Delivery Type */}
+            <div className="w-56 flex-shrink-0 pr-4">
+                <div className="text-xs text-gray-700 font-medium">
+                    Today | {delivery.timeRange} | <span className={getDurationColor(delivery.duration)}>{delivery.duration}</span>
                 </div>
-                <div className="flex items-center space-x-4">
-                    <StatusBadge status={delivery.status} />
-                    <div className="relative">
-                        <button onClick={() => onMenuToggle(isMenuOpen ? null : delivery.id)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                            <MoreVertical className="w-5 h-5" />
+                <div className="flex items-center mt-1 text-xs text-green-600 font-medium">
+                    <User className="w-3 h-3 mr-1" />
+                    <span>{delivery.deliveryType}</span>
+                </div>
+            </div>
+
+            {/* Column 5: Locations (Visual Connector) */}
+            <div className="flex-1 min-w-0 pr-4 flex items-start">
+                <div className="flex flex-col items-center mr-3 pt-1 self-stretch">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                    <div className="w-0.5 flex-grow bg-gray-200 my-0.5 min-h-[16px]"></div>
+                    <div className="w-2 h-2 border-2 border-gray-400 rounded-full bg-white"></div>
+                </div>
+                <div className="flex flex-col justify-between h-full space-y-1 w-full">
+                    <span className="text-xs font-semibold text-gray-800 truncate block" title={delivery.pickupLocation}>{delivery.pickupLocation}</span>
+                    <span className="text-xs text-gray-600 truncate block" title={delivery.destination}>{delivery.destination}</span>
+                </div>
+            </div>
+
+            {/* Column 6: Payment & Actions */}
+            <div className="w-40 flex-shrink-0 text-right flex flex-col items-end justify-center space-y-1">
+                <div className="text-xs text-gray-600 font-medium">
+                    {delivery.source} | {delivery.paymentInfo}
+                </div>
+                <div className="flex items-center space-x-2">
+                    {delivery.waitTime && (
+                        <span className="text-xs text-red-500 font-bold">
+                            Wait time {delivery.waitTime}
+                        </span>
+                    )}
+                    {delivery.hasArrivalPin && (
+                        <button 
+                            className="text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-0.5 rounded transition-colors"
+                            onClick={(e) => { e.stopPropagation(); /* Handle PIN */ }}
+                        >
+                            Arrival PIN
                         </button>
-                        {isMenuOpen && (
-                            <div ref={menuRef} className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-50">
-                                <button onClick={() => { onNavigate(delivery.id); onMenuToggle(null); }} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                    <Eye className="w-4 h-4" />
-                                    <span>View Details</span>
-                                </button>
-                                {delivery.driver === 'Unassigned' ? (
-                                    <button onClick={() => { onActionClick('override', delivery); onMenuToggle(null); }} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                        <UserPlus className="w-4 h-4" />
-                                        <span>Assign Driver</span>
-                                    </button>
-                                ) : (
-                                    <button onClick={() => { onActionClick('override', delivery); onMenuToggle(null); }} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                        <Edit className="w-4 h-4" />
-                                        <span>Reassign/Override</span>
-                                    </button>
-                                )}
-                                <button onClick={() => { onActionClick('audit', delivery); onMenuToggle(null); }} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                    <History className="w-4 h-4" />
-                                    <span>View Audit Trail</span>
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                    )}
                 </div>
             </div>
         </div>

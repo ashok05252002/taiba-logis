@@ -1,58 +1,48 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DataTable from '../../components/Tables/DataTable';
-import { MoreVertical, User, Truck, Eye, UserPlus, Edit, Plus } from 'lucide-react';
-import OverrideAssignmentModal from './oversight/OverrideAssignmentModal';
+import React, { useState } from 'react';
+import { Search, RefreshCw, FileText, ChevronDown, Filter, Volume2, Layout } from 'lucide-react';
+import DeliveryListItem from '../shared/DeliveryListItem';
+import OrderDetailsPanel from './components/OrderDetailsPanel';
 import CreateOrderModal from '../shared/CreateOrderModal';
 import { allDeliveries, allDrivers } from '../../data/mockData';
 
 const tabs = [
-    { id: 'all', name: 'All' },
-    { id: 'confirm', name: 'To Confirm' },
-    { id: 'unassigned', name: 'Unassigned' },
-    { id: 'assigned', name: 'Assigned' },
-    { id: 'progress', name: 'In Progress' },
-    { id: 'done', name: 'Done' },
-    { id: 'cancelled', name: 'Cancelled' },
+    { id: 'all', name: 'ALL', count: allDeliveries.length, color: 'bg-gray-700' },
+    { id: 'confirm', name: 'TO CONFIRM', count: 0, color: 'bg-purple-500' },
+    { id: 'unassigned', name: 'UNASSIGNED', count: 1, color: 'bg-blue-500' },
+    { id: 'assigned', name: 'ASSIGNED', count: 4, color: 'bg-[#E5904D]' },
+    { id: 'progress', name: 'IN PROGRESS', count: 1, color: 'bg-[#5CB8A7]' },
+    { id: 'done', name: 'DONE', count: 2, color: 'bg-[#8F95A3]' },
+    { id: 'cancelled', name: 'CANCELLED', count: 0, color: 'bg-red-500' },
 ];
-
-const zones = ['North', 'South', 'East', 'West', 'Central'];
-
-const StatusBadge = ({ status }) => {
-    const statusConfig = {
-        'To Confirm': 'bg-yellow-100 text-yellow-800', 'Pending': 'bg-orange-100 text-orange-800',
-        'Unassigned': 'bg-orange-100 text-orange-800', 'Assigned': 'bg-blue-100 text-blue-800',
-        'In Progress': 'bg-indigo-100 text-indigo-800', 'In Transit': 'bg-indigo-100 text-indigo-800',
-        'Delayed': 'bg-red-100 text-red-800', 'Done': 'bg-green-100 text-green-800',
-        'Delivered': 'bg-green-100 text-green-800', 'Cancelled': 'bg-gray-200 text-gray-800',
-        'Failed': 'bg-red-100 text-red-800',
-    };
-    const className = statusConfig[status] || 'bg-gray-100 text-gray-800';
-    return <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${className}`}>{status}</span>;
-};
 
 function DeliveryOversight() {
     const [activeTab, setActiveTab] = useState('all');
     const [deliveries, setDeliveries] = useState(allDeliveries);
-    const [selectedDelivery, setSelectedDelivery] = useState(null);
-    const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedIds, setSelectedIds] = useState([]);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [openActionMenu, setOpenActionMenu] = useState(null);
-    const actionMenuRef = useRef(null);
-    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (actionMenuRef.current && !actionMenuRef.current.contains(event.target)) setOpenActionMenu(null);
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    const handleOrderClick = (order) => {
+        setSelectedOrder(order);
+    };
 
-    const openAssignModal = (delivery) => {
-        setSelectedDelivery(delivery);
-        setIsAssignModalOpen(true);
-        setOpenActionMenu(null);
+    const handleClosePanel = () => {
+        setSelectedOrder(null);
+    };
+
+    const handleSelectOrder = (id) => {
+        setSelectedIds(prev => 
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
+    const handleSelectAll = (e) => {
+        if (e.target.checked) {
+            setSelectedIds(deliveries.map(d => d.id));
+        } else {
+            setSelectedIds([]);
+        }
     };
 
     const handleCreateOrder = (newOrder) => {
@@ -60,146 +50,134 @@ function DeliveryOversight() {
         setIsCreateModalOpen(false);
     };
 
-    const handleReassignment = (deliveryId, newZone, newDriver) => {
-        setDeliveries(prev => prev.map(d => 
-            d.id === deliveryId 
-            ? { ...d, zone: newZone, driver: newDriver, status: 'Assigned' } 
-            : d
-        ));
-        setIsAssignModalOpen(false);
-    };
+    const filteredDeliveries = deliveries.filter(d => {
+        const matchesSearch = d.title.toLowerCase().includes(searchTerm.toLowerCase()) || d.id.includes(searchTerm);
+        if (!matchesSearch) return false;
 
-    const getFilteredDeliveries = () => {
         switch (activeTab) {
-            case 'confirm': return deliveries.filter(d => d.status === 'To Confirm');
-            case 'unassigned': return deliveries.filter(d => d.driver === 'Unassigned');
-            case 'assigned': return deliveries.filter(d => d.status === 'Assigned');
-            case 'progress': return deliveries.filter(d => ['In Transit', 'Delayed', 'In Progress'].includes(d.status));
-            case 'done': return deliveries.filter(d => d.status === 'Delivered');
-            case 'cancelled': return deliveries.filter(d => ['Failed', 'Cancelled'].includes(d.status));
-            default: return deliveries;
+            case 'confirm': return d.status === 'To Confirm';
+            case 'unassigned': return d.driver === 'Unassigned';
+            case 'assigned': return d.status === 'Assigned';
+            case 'progress': return ['In Transit', 'In Progress'].includes(d.status);
+            case 'done': return ['Delivered', 'Done'].includes(d.status);
+            case 'cancelled': return d.status === 'Cancelled';
+            default: return true;
         }
-    };
-    
-    const columns = [
-        {
-            header: 'Order',
-            render: (row) => (
-                <div>
-                    <p className="font-bold">{row.id}</p>
-                    <p className="text-xs text-gray-500">{row.deliveryType}</p>
-                    {row.status === 'Cancelled' && row.cancellationReason && (
-                        <div className="mt-1">
-                            <p className="text-xs font-semibold text-red-600">Reason: {row.cancellationReason}</p>
-                            <p className="text-xs text-red-500 max-w-[200px] whitespace-normal">"{row.cancellationComments}"</p>
-                        </div>
-                    )}
-                </div>
-            )
-        },
-        { header: 'Status', render: (row) => <StatusBadge status={row.status} /> },
-        {
-            header: 'Source',
-            render: (row) => (
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${row.source === 'Manual' ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800'}`}>
-                    {row.source}
-                </span>
-            )
-        },
-        {
-            header: 'Customer & Driver',
-            render: (row) => (
-                <div>
-                    <p className="flex items-center space-x-1"><User className="w-3 h-3 text-gray-400"/><span>{row.customer}</span></p>
-                    <p className="flex items-center space-x-1 text-xs text-gray-500"><Truck className="w-3 h-3 text-gray-400"/><span>{row.driver}</span></p>
-                </div>
-            )
-        },
-        {
-            header: 'Order Date',
-            render: (row) => (
-                <div>
-                    <p>{new Date(row.createdAt).toLocaleDateString()}</p>
-                    <p className="text-xs text-gray-500">{new Date(row.createdAt).toLocaleTimeString()}</p>
-                </div>
-            )
-        },
-        {
-            header: 'Timings',
-            render: (row) => {
-                const durationMinutes = parseInt(row.duration.match(/\d+/)?.[0] || 0);
-                const isHours = row.duration.includes('h');
-                const isOvertime = isHours || durationMinutes > 30;
-                const durationColor = isOvertime ? 'text-red-500' : 'text-green-500';
-                return (
-                    <div>
-                        <p>{row.timeRange}</p>
-                        <p className={`text-xs font-bold ${durationColor}`}>Duration: {row.duration}</p>
-                    </div>
-                );
-            }
-        },
-        {
-            header: 'Actions',
-            render: (row) => (
-                <div className="relative">
-                    <button onClick={() => setOpenActionMenu(openActionMenu === row.id ? null : row.id)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                        <MoreVertical className="w-5 h-5" />
-                    </button>
-                    {openActionMenu === row.id && (
-                        <div ref={actionMenuRef} className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border z-30">
-                            <button onClick={() => navigate(`/super-admin/oversight/${row.id}`)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                <Eye className="w-4 h-4" /><span>View Details</span>
-                            </button>
-                            {row.driver === 'Unassigned' ? (
-                                <button onClick={() => openAssignModal(row)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                    <UserPlus className="w-4 h-4" /><span>Assign Driver</span>
-                                </button>
-                            ) : (
-                                <button onClick={() => openAssignModal(row)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
-                                    <Edit className="w-4 h-4" /><span>Reassign/Override</span>
-                                </button>
-                            )}
-                        </div>
-                    )}
-                </div>
-            )
-        }
-    ];
+    });
 
     return (
-        <>
-            <div className="space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                    <div>
-                        <h2 className="text-xl font-bold text-taiba-gray mb-1">Delivery Operations Oversight</h2>
-                        <p className="text-sm text-taiba-gray">Monitor all deliveries and handle escalations across the network.</p>
+        <div className="flex h-[calc(100vh-64px)] bg-gray-50 overflow-hidden font-sans">
+            <div className={`flex-1 flex flex-col transition-all duration-300 ${selectedOrder ? 'mr-[450px]' : ''}`}>
+                
+                {/* Top Filter Bar */}
+                <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm z-20">
+                    <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar">
+                        {tabs.map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex items-center space-x-2 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap ${
+                                    activeTab === tab.id 
+                                        ? `${tab.color} text-white shadow-md` 
+                                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                }`}
+                            >
+                                <div className={`w-2 h-2 rounded-full ${activeTab === tab.id ? 'bg-white' : tab.color}`}></div>
+                                <span>{tab.name}</span>
+                                {tab.count > 0 && activeTab !== tab.id && <span className="ml-1 opacity-75">({tab.count})</span>}
+                            </button>
+                        ))}
                     </div>
-                    <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center space-x-2 btn-primary px-6 py-2.5">
-                        <Plus className="w-5 h-5" />
-                        <span>New Manual Order</span>
-                    </button>
-                </div>
-                <div className="bg-white rounded-xl shadow-md">
-                    <div className="border-b border-gray-200">
-                        <div className="flex space-x-1 sm:space-x-4 px-2 sm:px-4 overflow-x-auto no-scrollbar">
-                            {tabs.map((tab) => (
-                                <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`py-4 px-3 font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id ? 'border-taiba-blue text-taiba-blue' : 'border-transparent text-taiba-gray hover:text-taiba-blue'}`}>
-                                    {tab.name}
-                                </button>
-                            ))}
+                    
+                    <div className="flex items-center space-x-3 ml-4 flex-shrink-0">
+                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">Check Count</span>
+                        <div className="relative">
+                            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                            <input 
+                                type="text" 
+                                placeholder="Search" 
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-9 pr-4 py-1.5 bg-gray-100 border-none rounded-full text-xs focus:ring-2 focus:ring-blue-500 w-40 transition-all"
+                            />
                         </div>
+                        <div className="flex rounded-md shadow-sm">
+                            <button onClick={() => setIsCreateModalOpen(true)} className="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-l-md hover:bg-blue-700">New Order</button>
+                            <button className="px-2 py-1.5 bg-blue-600 text-white border-l border-blue-500 rounded-r-md hover:bg-blue-700"><ChevronDown className="w-3.5 h-3.5" /></button>
+                        </div>
+                        <button className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full border border-gray-200"><RefreshCw className="w-3.5 h-3.5" /></button>
+                        <button className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full border border-gray-200"><FileText className="w-3.5 h-3.5" /></button>
                     </div>
-                    <DataTable columns={columns} data={getFilteredDeliveries()} />
+                </div>
+
+                {/* Secondary Toolbar */}
+                <div className="bg-[#F8F9FA] border-b border-gray-200 px-4 py-2 flex items-center justify-between text-[11px] text-gray-600 font-medium">
+                    <div className="flex items-center space-x-4">
+                        <label className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
+                            <input type="checkbox" onChange={handleSelectAll} checked={selectedIds.length === deliveries.length && deliveries.length > 0} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5" />
+                            <span>Select All</span>
+                        </label>
+                        <button className="flex items-center space-x-1 hover:text-gray-900"><Filter className="w-3 h-3" /><span>More Filters</span></button>
+                        <span className="text-gray-300">|</span>
+                        <span>Today 00:37 - 23:59</span>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        <button className="flex items-center space-x-1 hover:text-blue-600"><span>What's New</span><ExternalLink className="w-3 h-3" /></button>
+                        <div className="flex items-center space-x-2">
+                            <span>New View</span>
+                            <div className="w-7 h-3.5 bg-gray-300 rounded-full relative cursor-pointer"><div className="w-3.5 h-3.5 bg-white rounded-full shadow-sm absolute left-0"></div></div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>Ondemand</span>
+                            <div className="w-7 h-3.5 bg-gray-300 rounded-full relative cursor-pointer"><div className="w-3.5 h-3.5 bg-white rounded-full shadow-sm absolute left-0"></div></div>
+                        </div>
+                        <button className="hover:text-gray-900"><Volume2 className="w-3.5 h-3.5" /></button>
+                        <button className="flex items-center space-x-1 hover:text-gray-900"><span>Sort by ID 9-1</span><ChevronDown className="w-3 h-3" /></button>
+                    </div>
+                </div>
+
+                {/* List Content */}
+                <div className="flex-1 overflow-y-auto bg-white">
+                    {filteredDeliveries.length > 0 ? (
+                        filteredDeliveries.map(delivery => (
+                            <DeliveryListItem 
+                                key={delivery.id} 
+                                delivery={delivery} 
+                                isSelected={selectedIds.includes(delivery.id) || (selectedOrder?.id === delivery.id) || false}
+                                onSelect={handleSelectOrder}
+                                onClick={() => handleOrderClick(delivery)}
+                            />
+                        ))
+                    ) : (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                            <Layout className="w-12 h-12 mb-3 opacity-20" />
+                            <p className="text-sm">No orders found for this filter.</p>
+                        </div>
+                    )}
                 </div>
             </div>
-            <OverrideAssignmentModal isOpen={isAssignModalOpen} onClose={() => setIsAssignModalOpen(false)} delivery={selectedDelivery} zones={zones} drivers={allDrivers} onConfirm={handleReassignment} />
+
+            {/* Slide-out Panel */}
+            {selectedOrder && (
+                <OrderDetailsPanel 
+                    order={selectedOrder} 
+                    onClose={handleClosePanel} 
+                    drivers={allDrivers}
+                />
+            )}
+
             <CreateOrderModal 
                 isOpen={isCreateModalOpen} 
                 onClose={() => setIsCreateModalOpen(false)} 
                 onCreateOrder={handleCreateOrder} 
             />
-        </>
+        </div>
+    );
+}
+
+function ExternalLink({ className }) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
     );
 }
 
