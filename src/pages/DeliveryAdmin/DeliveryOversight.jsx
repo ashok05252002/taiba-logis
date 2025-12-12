@@ -85,7 +85,7 @@ function DeliveryOversight() {
             render: (row) => (
                 <div>
                     <p className="font-bold">{row.id}</p>
-                    <p className="text-xs text-gray-500">{row.zone}</p>
+                    <p className="text-xs text-gray-500">{row.cluster}</p>
                     {row.status === 'Cancelled' && row.cancellationReason && (
                         <div className="mt-1">
                             <p className="text-xs font-semibold text-red-600">Reason: {row.cancellationReason}</p>
@@ -171,7 +171,7 @@ function DeliveryOversight() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
                     <div>
                         <h2 className="text-xl font-bold text-taiba-gray mb-1">Order & Delivery Monitoring</h2>
-                        <p className="text-sm text-taiba-gray">Monitor and manage deliveries within your assigned zones.</p>
+                        <p className="text-sm text-taiba-gray">Monitor and manage deliveries within your assigned clusters.</p>
                     </div>
                     <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center space-x-2 btn-primary px-6 py-2.5">
                         <Plus className="w-5 h-5" />

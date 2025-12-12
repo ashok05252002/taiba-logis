@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from '../../../components/common/Modal';
 
 const issueTypes = ['Driver Issue', 'Customer Complaint', 'System Error'];
-const recipients = ['Zone Incharge', 'Delivery Admin'];
+const recipients = ['Cluster Incharge', 'Delivery Admin'];
 
 function RaiseIssueModal({ isOpen, onClose, onCreate }) {
     const handleSubmit = (e) => {

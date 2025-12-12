@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ban, User, MapPin } from 'lucide-react';
+import { Ban } from 'lucide-react';
 
 const StatusBadge = ({ status }) => {
     const statusConfig = {
@@ -20,7 +20,7 @@ const StatusBadge = ({ status }) => {
     );
 };
 
-const DeliveryListItem = ({ delivery, isSelected, onSelect, onClick }) => {
+const DeliveryListItem = ({ delivery, isSelected, onSelect, onClick, onViewPin }) => {
     
     const getDurationColor = (duration) => {
         if (duration.includes('h')) return 'text-red-500';
@@ -45,8 +45,8 @@ const DeliveryListItem = ({ delivery, isSelected, onSelect, onClick }) => {
                 </div>
             </div>
 
-            {/* Column 2: ID & Title */}
-            <div className="w-56 flex-shrink-0 pr-4">
+            {/* Column 2: ID & Title - Reduced width slightly */}
+            <div className="w-48 flex-shrink-0 pr-4">
                 <h4 className="font-bold text-gray-800 text-sm truncate" title={delivery.title}>{delivery.title}</h4>
                 <p className="text-xs text-gray-500 flex items-center mt-0.5">
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-1.5"></span>
@@ -59,14 +59,10 @@ const DeliveryListItem = ({ delivery, isSelected, onSelect, onClick }) => {
                 <StatusBadge status={delivery.status} />
             </div>
 
-            {/* Column 4: Time & Delivery Type */}
-            <div className="w-56 flex-shrink-0 pr-4">
+            {/* Column 4: Time - Delivery Type Removed */}
+            <div className="w-48 flex-shrink-0 pr-4">
                 <div className="text-xs text-gray-700 font-medium">
                     Today | {delivery.timeRange} | <span className={getDurationColor(delivery.duration)}>{delivery.duration}</span>
-                </div>
-                <div className="flex items-center mt-1 text-xs text-green-600 font-medium">
-                    <User className="w-3 h-3 mr-1" />
-                    <span>{delivery.deliveryType}</span>
                 </div>
             </div>
 
@@ -83,21 +79,24 @@ const DeliveryListItem = ({ delivery, isSelected, onSelect, onClick }) => {
                 </div>
             </div>
 
-            {/* Column 6: Payment & Actions */}
-            <div className="w-40 flex-shrink-0 text-right flex flex-col items-end justify-center space-y-1">
+            {/* Column 6: Payment & Actions - Increased width */}
+            <div className="w-52 flex-shrink-0 text-right flex flex-col items-end justify-center space-y-1.5 pl-2">
                 <div className="text-xs text-gray-600 font-medium">
                     {delivery.source} | {delivery.paymentInfo}
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-end space-x-3 w-full">
                     {delivery.waitTime && (
-                        <span className="text-xs text-red-500 font-bold">
-                            Wait time {delivery.waitTime}
+                        <span className="text-[10px] text-red-500 font-bold whitespace-nowrap bg-red-50 px-2 py-0.5 rounded">
+                            Wait: {delivery.waitTime}
                         </span>
                     )}
                     {delivery.hasArrivalPin && (
                         <button 
-                            className="text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-0.5 rounded transition-colors"
-                            onClick={(e) => { e.stopPropagation(); /* Handle PIN */ }}
+                            className="text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1 rounded transition-colors whitespace-nowrap"
+                            onClick={(e) => { 
+                                e.stopPropagation(); 
+                                onViewPin(delivery);
+                            }}
                         >
                             Arrival PIN
                         </button>

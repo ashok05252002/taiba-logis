@@ -16,10 +16,10 @@ import {
 function Overview() {
   // As per your request, the dashboard widgets are organized into System Summary and Delivery Performance
   const systemSummaryStats = [
-    { icon: MapPin, title: 'Total Zones', value: '12', subtitle: 'Across all regions', color: 'blue' },
-    { icon: Puzzle, title: 'Total Clusters', value: '48', subtitle: 'Managed sub-zones', color: 'blue' },
+    { icon: MapPin, title: 'Total Clusters', value: '12', subtitle: 'Across all regions', color: 'blue' },
+    { icon: Puzzle, title: 'Total Areas', value: '48', subtitle: 'Managed sub-clusters', color: 'blue' },
     { icon: UserCheck, title: 'Active Admins', value: '4', subtitle: 'Delivery Admins', color: 'purple' },
-    { icon: UserCog, title: 'Active Incharges', value: '12', subtitle: 'Zone Incharges', color: 'purple' },
+    { icon: UserCog, title: 'Active Incharges', value: '12', subtitle: 'Cluster Incharges', color: 'purple' },
     { icon: Users, title: 'Active Drivers', value: '129', subtitle: 'On-duty partners', color: 'purple' },
   ];
 
@@ -70,15 +70,15 @@ function Overview() {
           <h3 className="text-lg font-bold text-taiba-gray mb-4">Escalations & Alerts</h3>
           <div className="space-y-4">
             {[
-              { zone: 'North Zone', issue: 'High delay rate', time: '15m ago' },
-              { zone: 'Central Zone', issue: 'Driver shortage', time: '45m ago' },
-              { zone: 'East Zone', issue: 'API Failure: Payments', time: '1h ago' },
-              { zone: 'South Zone', issue: 'Multiple failed deliveries', time: '3h ago' },
+              { cluster: 'North Cluster', issue: 'High delay rate', time: '15m ago' },
+              { cluster: 'Central Cluster', issue: 'Driver shortage', time: '45m ago' },
+              { cluster: 'East Cluster', issue: 'API Failure: Payments', time: '1h ago' },
+              { cluster: 'South Cluster', issue: 'Multiple failed deliveries', time: '3h ago' },
             ].map((alert, i) => (
               <div key={i} className="flex items-start space-x-3 pb-3 border-b border-gray-100 last:border-0">
                 <AlertCircle className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-taiba-gray">{alert.zone}</p>
+                  <p className="text-sm font-medium text-taiba-gray">{alert.cluster}</p>
                   <p className="text-xs text-taiba-gray">{alert.issue}</p>
                 </div>
                 <p className="text-xs text-gray-400">{alert.time}</p>

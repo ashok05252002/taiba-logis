@@ -5,11 +5,11 @@ import DriverActivityLogModal from './drivers/DriverActivityLogModal';
 import ForceActionModal from './drivers/ForceActionModal';
 
 const initialDrivers = [
-    { id: 'D001', name: 'Khalid Ibrahim', zone: 'North Zone', incharge: 'Fatima Hassan', vehicle: 'Bike', status: 'Online', activityLog: [{ action: 'Checked In', timestamp: '09:00 AM' }, { action: 'Order ORD551 Accepted', timestamp: '10:32 AM' }] },
-    { id: 'D002', name: 'Noura Saad', zone: 'Central Zone', incharge: 'Omar Rashid', vehicle: 'Car', status: 'On Break', activityLog: [{ action: 'Checked In', timestamp: '09:15 AM' }, { action: 'Started Break', timestamp: '11:00 AM' }] },
-    { id: 'D003', name: 'Fahad Al-Mutairi', zone: 'North Zone', incharge: 'Fatima Hassan', vehicle: 'Bike', status: 'Offline', activityLog: [{ action: 'Checked Out', timestamp: 'Yesterday 06:00 PM' }] },
-    { id: 'D004', name: 'Aisha Al-Ghamdi', zone: 'Central Zone', incharge: 'Omar Rashid', vehicle: 'Car', status: 'Online', activityLog: [{ action: 'Checked In', timestamp: '08:45 AM' }] },
-    { id: 'D005', name: 'Sultan Al-Otaibi', zone: 'North Zone', incharge: 'Fatima Hassan', vehicle: 'Bike', status: 'Suspended', activityLog: [{ action: 'Account Suspended by Admin', timestamp: '10:00 AM' }] },
+    { id: 'D001', name: 'Khalid Ibrahim', cluster: 'North Cluster', incharge: 'Fatima Hassan', vehicle: 'Bike', status: 'Online', activityLog: [{ action: 'Checked In', timestamp: '09:00 AM' }, { action: 'Order ORD551 Accepted', timestamp: '10:32 AM' }] },
+    { id: 'D002', name: 'Noura Saad', cluster: 'Central Cluster', incharge: 'Omar Rashid', vehicle: 'Car', status: 'On Break', activityLog: [{ action: 'Checked In', timestamp: '09:15 AM' }, { action: 'Started Break', timestamp: '11:00 AM' }] },
+    { id: 'D003', name: 'Fahad Al-Mutairi', cluster: 'North Cluster', incharge: 'Fatima Hassan', vehicle: 'Bike', status: 'Offline', activityLog: [{ action: 'Checked Out', timestamp: 'Yesterday 06:00 PM' }] },
+    { id: 'D004', name: 'Aisha Al-Ghamdi', cluster: 'Central Cluster', incharge: 'Omar Rashid', vehicle: 'Car', status: 'Online', activityLog: [{ action: 'Checked In', timestamp: '08:45 AM' }] },
+    { id: 'D005', name: 'Sultan Al-Otaibi', cluster: 'North Cluster', incharge: 'Fatima Hassan', vehicle: 'Bike', status: 'Suspended', activityLog: [{ action: 'Account Suspended by Admin', timestamp: '10:00 AM' }] },
 ];
 
 function DriverManagement() {
@@ -54,8 +54,8 @@ function DriverManagement() {
     const columns = [
         { header: 'Driver ID', accessor: 'id' },
         { header: 'Name', accessor: 'name' },
-        { header: 'Assigned Zone', accessor: 'zone' },
-        { header: 'Zone Incharge', accessor: 'incharge' },
+        { header: 'Assigned Cluster', accessor: 'cluster' },
+        { header: 'Cluster Incharge', accessor: 'incharge' },
         { header: 'Vehicle', accessor: 'vehicle' },
         {
             header: 'Status', accessor: 'status',
@@ -103,7 +103,7 @@ function DriverManagement() {
             <div className="space-y-6">
                 <div>
                     <h2 className="text-xl font-bold text-taiba-gray mb-1">Driver Management</h2>
-                    <p className="text-sm text-taiba-gray">Monitor driver status and manage accounts within your zones.</p>
+                    <p className="text-sm text-taiba-gray">Monitor driver status and manage accounts within your clusters.</p>
                 </div>
                 <DataTable columns={columns} data={drivers} />
             </div>

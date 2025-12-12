@@ -5,7 +5,7 @@ import { User, Lock, ChevronDown, MapPin } from 'lucide-react';
 const roles = [
   { id: 'super-admin', name: 'Delivery Super Admin', path: '/super-admin' },
   { id: 'delivery-admin', name: 'Delivery Admin', path: '/delivery-admin' },
-  { id: 'zone-incharge', name: 'Zone Incharge', path: '/zone-incharge' },
+  { id: 'zone-incharge', name: 'Cluster Incharge', path: '/zone-incharge' },
   { id: 'store-incharge', name: 'Store Incharge', path: '/store-incharge' },
   { id: 'driver', name: 'Delivery Partner (Driver)', path: '/driver' },
   { id: 'customer', name: 'Customer', path: '/customer' },

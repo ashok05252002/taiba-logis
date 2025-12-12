@@ -20,7 +20,7 @@ const getLogIcon = (action) => {
     return { icon: History, color: 'text-gray-500' };
 };
 
-function OrderDetailPage({ onConfirmAssignment, zones = [] }) {
+function OrderDetailPage({ onConfirmAssignment, clusters = [] }) {
     const { orderId } = useParams();
     const initialOrder = allDeliveries.find(o => o.id === orderId);
     
@@ -56,13 +56,13 @@ function OrderDetailPage({ onConfirmAssignment, zones = [] }) {
     
     const currentStepIndex = getStatusIndex(order.status);
     
-    const handleAssignmentConfirm = (deliveryId, newDriverOrZone, newDriver) => {
-        const driverName = isSuperAdmin ? newDriver : newDriverOrZone;
+    const handleAssignmentConfirm = (deliveryId, newDriverOrCluster, newDriver) => {
+        const driverName = isSuperAdmin ? newDriver : newDriverOrCluster;
         const updatedOrder = {
             ...order,
             driver: driverName,
             status: 'Assigned',
-            zone: isSuperAdmin ? newDriverOrZone : order.zone,
+            cluster: isSuperAdmin ? newDriverOrCluster : order.cluster,
             auditTrail: [...order.auditTrail, { action: `Assigned to ${driverName}`, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]
         };
         setOrder(updatedOrder);
@@ -162,7 +162,7 @@ function OrderDetailPage({ onConfirmAssignment, zones = [] }) {
                                     <span>Get Directions</span>
                                 </button>
                                 <div className="space-y-3 text-sm pt-2">
-                                    <div className="flex items-start space-x-3"><MapPin className="w-4 h-4 text-taiba-purple mt-0.5" /><span>{order.address} ({order.zone})</span></div>
+                                    <div className="flex items-start space-x-3"><MapPin className="w-4 h-4 text-taiba-purple mt-0.5" /><span>{order.address} ({order.cluster})</span></div>
                                     <div className="flex items-center space-x-3"><User className="w-4 h-4 text-taiba-purple" /><span>{order.customer}</span></div>
                                     <div className="flex items-center space-x-3">
                                         <Phone className="w-4 h-4 text-taiba-purple" />
@@ -238,7 +238,7 @@ function OrderDetailPage({ onConfirmAssignment, zones = [] }) {
             </div>
             
             {isSuperAdmin ? (
-                <OverrideAssignmentModal isOpen={isAssignModalOpen} onClose={() => setIsAssignModalOpen(false)} delivery={order} zones={zones} drivers={allDrivers} onConfirm={handleAssignmentConfirm} />
+                <OverrideAssignmentModal isOpen={isAssignModalOpen} onClose={() => setIsAssignModalOpen(false)} delivery={order} clusters={clusters} drivers={allDrivers} onConfirm={handleAssignmentConfirm} />
             ) : (
                 <ReassignDriverModal isOpen={isAssignModalOpen} onClose={() => setIsAssignModalOpen(false)} delivery={order} drivers={allDrivers} onConfirm={handleAssignmentConfirm} />
             )}

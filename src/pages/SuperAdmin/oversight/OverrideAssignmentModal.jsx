@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/common/Modal';
 
-function OverrideAssignmentModal({ isOpen, onClose, delivery, zones, drivers, onConfirm }) {
-  const [newZone, setNewZone] = useState('');
+function OverrideAssignmentModal({ isOpen, onClose, delivery, clusters, drivers, onConfirm }) {
+  const [newCluster, setNewCluster] = useState('');
   const [newDriverId, setNewDriverId] = useState('');
   const [availableDrivers, setAvailableDrivers] = useState([]);
 
   useEffect(() => {
     if (delivery) {
-      setNewZone(delivery.zone);
+      setNewCluster(delivery.cluster);
       setNewDriverId(drivers.find(d => d.name === delivery.driver)?.id || '');
     }
   }, [delivery, drivers]);
 
   useEffect(() => {
-    if (newZone && drivers) {
-      const filtered = drivers.filter(d => d.zone === newZone);
+    if (newCluster && drivers) {
+      const filtered = drivers.filter(d => d.cluster === newCluster);
       setAvailableDrivers(filtered);
       if (!filtered.some(d => d.id === newDriverId)) {
         setNewDriverId('');
       }
     }
-  }, [newZone, drivers, newDriverId]);
+  }, [newCluster, drivers, newDriverId]);
   
   if (!delivery) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const driverName = drivers.find(d => d.id === newDriverId)?.name || 'Unassigned';
-    onConfirm(delivery.id, newZone, driverName);
+    onConfirm(delivery.id, newCluster, driverName);
   };
 
   return (
@@ -36,17 +36,17 @@ function OverrideAssignmentModal({ isOpen, onClose, delivery, zones, drivers, on
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div>
           <h4 className="font-semibold text-taiba-gray">Current Assignment</h4>
-          <p className="text-sm text-taiba-gray">Zone: {delivery.zone} | Driver: {delivery.driver}</p>
+          <p className="text-sm text-taiba-gray">Cluster: {delivery.cluster} | Driver: {delivery.driver}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-taiba-gray mb-2">New Zone</label>
-            <select value={newZone} onChange={(e) => setNewZone(e.target.value)} className="input-field" required>
-              {zones.map(z => <option key={z} value={z}>{z}</option>)}
+            <label className="block text-sm font-medium text-taiba-gray mb-2">New Cluster</label>
+            <select value={newCluster} onChange={(e) => setNewCluster(e.target.value)} className="input-field" required>
+              {clusters.map(z => <option key={z} value={z}>{z}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-taiba-gray mb-2">Select Driver from {newZone}</label>
+            <label className="block text-sm font-medium text-taiba-gray mb-2">Select Driver from {newCluster}</label>
             <div className="space-y-2 border rounded-lg p-2 max-h-48 overflow-y-auto">
               {availableDrivers.length > 0 ? availableDrivers.map(driver => (
                 <label key={driver.id} className={`flex items-center justify-between p-3 rounded-md transition-colors ${driver.status !== 'Available' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'cursor-pointer hover:bg-blue-50'}`}>
@@ -70,7 +70,7 @@ function OverrideAssignmentModal({ isOpen, onClose, delivery, zones, drivers, on
                         {driver.status}
                     </span>
                 </label>
-              )) : <p className="text-sm text-center text-gray-500 p-4">No available drivers in this zone.</p>}
+              )) : <p className="text-sm text-center text-gray-500 p-4">No available drivers in this cluster.</p>}
             </div>
           </div>
         </div>

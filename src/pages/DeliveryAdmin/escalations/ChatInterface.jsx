@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Search, Send, User, Bot, Circle } from 'lucide-react';
 
 const contacts = [
-    { id: 1, name: 'Fatima Hassan', role: 'Zone Incharge', status: 'online' },
-    { id: 2, name: 'Omar Rashid', role: 'Zone Incharge', status: 'offline' },
-    { id: 3, name: 'Aisha Ibrahim', role: 'Zone Incharge', status: 'online' },
+    { id: 1, name: 'Fatima Hassan', role: 'Cluster Incharge', status: 'online' },
+    { id: 2, name: 'Omar Rashid', role: 'Cluster Incharge', status: 'offline' },
+    { id: 3, name: 'Aisha Ibrahim', role: 'Cluster Incharge', status: 'online' },
     { id: 4, name: 'Khalid Ibrahim', role: 'Driver', status: 'online' },
     { id: 5, name: 'Noura Saad', role: 'Driver', status: 'break' },
     { id: 6, name: 'Fahad Al-Mutairi', role: 'Driver', status: 'offline' },
@@ -12,8 +12,8 @@ const contacts = [
 
 const initialMessages = {
     '1': [
-        { sender: 'me', text: 'Hi Fatima, can you check on the driver shortage in North Zone?', time: '10:30 AM' },
-        { sender: 'Fatima Hassan', text: 'On it. I\'m reassigning a driver from a less busy cluster.', time: '10:31 AM' },
+        { sender: 'me', text: 'Hi Fatima, can you check on the driver shortage in North Cluster?', time: '10:30 AM' },
+        { sender: 'Fatima Hassan', text: 'On it. I\'m reassigning a driver from a less busy area.', time: '10:31 AM' },
     ],
     '4': [
         { sender: 'me', text: 'Khalid, customer for ORD552 is not responding. What is the status?', time: '2:32 PM' },

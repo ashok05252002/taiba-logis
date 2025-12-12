@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '../../../components/common/Modal';
 
-const recipients = ['Zone Incharge - North', 'Driver - Khalid Ibrahim', 'Customer Support'];
+const recipients = ['Cluster Incharge - North', 'Driver - Khalid Ibrahim', 'Customer Support'];
 const channelOptions = ['Email', 'WhatsApp', 'In-App', 'Push'];
 
 function CreateNotificationModal({ isOpen, onClose, onCreate }) {

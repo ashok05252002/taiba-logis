@@ -6,10 +6,10 @@ const auditLogData = [
   {
     id: 'L011',
     timestamp: '2025-08-01 10:30:15',
-    eventType: 'ZONE_ASSIGNMENT',
+    eventType: 'CLUSTER_ASSIGNMENT',
     performedBy: 'Delivery Admin',
     details: {
-      zoneId: 'Z001',
+      clusterId: 'Z001',
       oldInchargeId: 'U002',
       newInchargeId: 'U007',
       adminId: 'DA001'
@@ -32,7 +32,7 @@ const auditLogData = [
     eventType: 'CONFIGURATION_UPDATE',
     performedBy: 'Delivery Admin',
     details: {
-      configKey: 'North Zone Shift Time',
+      configKey: 'North Cluster Shift Time',
       oldValue: '9 AM - 6 PM',
       newValue: '10 AM - 7 PM',
       updatedBy: 'Delivery Admin (DA001)'
@@ -42,7 +42,7 @@ const auditLogData = [
 
 const EventTypeBadge = ({ eventType }) => {
   const config = {
-    ZONE_ASSIGNMENT: { icon: MapPin, color: 'blue' },
+    CLUSTER_ASSIGNMENT: { icon: MapPin, color: 'blue' },
     USER_DEACTIVATION: { icon: UserCog, color: 'red' },
     CONFIGURATION_UPDATE: { icon: SlidersHorizontal, color: 'purple' },
   };
@@ -63,8 +63,8 @@ const EventTypeBadge = ({ eventType }) => {
 const DetailsRenderer = ({ row }) => {
   const { eventType, details } = row;
   switch (eventType) {
-    case 'ZONE_ASSIGNMENT':
-      return `Zone ${details.zoneId}: Incharge reassigned from ${details.oldInchargeId} to ${details.newInchargeId}.`;
+    case 'CLUSTER_ASSIGNMENT':
+      return `Cluster ${details.clusterId}: Incharge reassigned from ${details.oldInchargeId} to ${details.newInchargeId}.`;
     case 'USER_DEACTIVATION':
       return `User ${details.userId} was ${details.action} by ${details.performedBy}.`;
     case 'CONFIGURATION_UPDATE':
@@ -85,7 +85,7 @@ function AuditLogs() {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-bold text-taiba-gray mb-1">Audit Logs</h2>
-        <p className="text-sm text-taiba-gray">Track all significant actions performed within your assigned zones.</p>
+        <p className="text-sm text-taiba-gray">Track all significant actions performed within your assigned clusters.</p>
       </div>
       <DataTable columns={columns} data={auditLogData} />
     </div>

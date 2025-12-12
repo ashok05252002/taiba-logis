@@ -3,64 +3,64 @@ import Modal from '../../../components/common/Modal';
 import { X } from 'lucide-react';
 
 function ManageClustersModal({ isOpen, onClose, zone, onSave }) {
-    const [clusters, setClusters] = useState([]);
-    const [newCluster, setNewCluster] = useState('');
+    const [subClusters, setSubClusters] = useState([]);
+    const [newSubCluster, setNewSubCluster] = useState('');
 
     useEffect(() => {
         if (zone) {
-            setClusters(zone.clusters || []);
+            setSubClusters(zone.subClusters || []);
         }
     }, [zone]);
 
     if (!zone) return null;
 
-    const handleAddCluster = () => {
-        if (newCluster.trim() && !clusters.includes(newCluster.trim())) {
-            setClusters([...clusters, newCluster.trim()]);
-            setNewCluster('');
+    const handleAddSubCluster = () => {
+        if (newSubCluster.trim() && !subClusters.includes(newSubCluster.trim())) {
+            setSubClusters([...subClusters, newSubCluster.trim()]);
+            setNewSubCluster('');
         }
     };
 
-    const handleRemoveCluster = (clusterToRemove) => {
-        setClusters(clusters.filter(c => c !== clusterToRemove));
+    const handleRemoveSubCluster = (subClusterToRemove) => {
+        setSubClusters(subClusters.filter(c => c !== subClusterToRemove));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(zone.id, clusters);
+        onSave(zone.id, subClusters);
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={`Manage Clusters for ${zone.name}`}>
+        <Modal isOpen={isOpen} onClose={onClose} title={`Manage Areas for ${zone.name}`}>
             <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
-                    <label className="block text-sm font-medium text-taiba-gray mb-2">Existing Clusters</label>
+                    <label className="block text-sm font-medium text-taiba-gray mb-2">Existing Areas</label>
                     <div className="p-4 border rounded-lg min-h-[8rem] space-y-2">
-                        {clusters.length > 0 ? (
-                            clusters.map(cluster => (
-                                <div key={cluster} className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-md">
-                                    <span className="text-sm font-medium text-taiba-gray">{cluster}</span>
-                                    <button type="button" onClick={() => handleRemoveCluster(cluster)} className="p-1 text-red-500 hover:bg-red-100 rounded-full">
+                        {subClusters.length > 0 ? (
+                            subClusters.map(subCluster => (
+                                <div key={subCluster} className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-md">
+                                    <span className="text-sm font-medium text-taiba-gray">{subCluster}</span>
+                                    <button type="button" onClick={() => handleRemoveSubCluster(subCluster)} className="p-1 text-red-500 hover:bg-red-100 rounded-full">
                                         <X className="w-4 h-4" />
                                     </button>
                                 </div>
                             ))
                         ) : (
-                            <p className="text-sm text-gray-500">No clusters defined yet.</p>
+                            <p className="text-sm text-gray-500">No areas defined yet.</p>
                         )}
                     </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-taiba-gray mb-2">Add New Cluster</label>
+                    <label className="block text-sm font-medium text-taiba-gray mb-2">Add New Area</label>
                     <div className="flex space-x-2">
                         <input
                             type="text"
-                            value={newCluster}
-                            onChange={(e) => setNewCluster(e.target.value)}
+                            value={newSubCluster}
+                            onChange={(e) => setNewSubCluster(e.target.value)}
                             className="input-field"
-                            placeholder="Enter new cluster name"
+                            placeholder="Enter new area name"
                         />
-                        <button type="button" onClick={handleAddCluster} className="btn-secondary px-4">
+                        <button type="button" onClick={handleAddSubCluster} className="btn-secondary px-4">
                             Add
                         </button>
                     </div>
@@ -70,7 +70,7 @@ function ManageClustersModal({ isOpen, onClose, zone, onSave }) {
                         Cancel
                     </button>
                     <button type="submit" className="btn-primary px-6 py-2">
-                        Save Clusters
+                        Save Areas
                     </button>
                 </div>
             </form>

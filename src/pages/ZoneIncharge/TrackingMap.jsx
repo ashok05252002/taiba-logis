@@ -6,7 +6,7 @@ function TrackingMap() {
         <div className="space-y-6">
             <div>
                 <h2 className="text-xl font-bold text-taiba-gray mb-1">Tracking Map View</h2>
-                <p className="text-sm text-taiba-gray">Live visualization of all drivers and orders in your zone.</p>
+                <p className="text-sm text-taiba-gray">Live visualization of all drivers and orders in your cluster.</p>
             </div>
             <div className="bg-white rounded-xl shadow-md h-[75vh] overflow-hidden flex items-center justify-center">
                 <div className="text-center p-8">

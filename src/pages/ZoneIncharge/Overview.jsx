@@ -5,12 +5,12 @@ import AssignOrderModal from './components/AssignOrderModal';
 
 const initialOrders = {
   pending: [
-    { id: 'ORD771', customer: 'Ali Ahmed', store: 'Main Branch', type: 'Standard', status: 'Pending', cluster: 'Cluster A', date: '2025-08-02' },
-    { id: 'ORD772', customer: 'Fatima Khan', store: 'Westside Pharmacy', type: 'Express', status: 'Pending', cluster: 'Cluster B', date: '2025-08-02' },
-    { id: 'ORD773', customer: 'Mohammed Ali', store: 'Main Branch', type: 'Standard', status: 'Pending', cluster: 'Cluster A', date: '2025-08-01' },
+    { id: 'ORD771', customer: 'Ali Ahmed', store: 'Main Branch', type: 'Standard', status: 'Pending', cluster: 'Area A', date: '2025-08-02' },
+    { id: 'ORD772', customer: 'Fatima Khan', store: 'Westside Pharmacy', type: 'Express', status: 'Pending', cluster: 'Area B', date: '2025-08-02' },
+    { id: 'ORD773', customer: 'Mohammed Ali', store: 'Main Branch', type: 'Standard', status: 'Pending', cluster: 'Area A', date: '2025-08-01' },
   ],
   assigned: [
-    { id: 'ORD774', customer: 'Noura Saad', store: 'Central Health', type: 'Standard', status: 'Assigned', cluster: 'Cluster B', driver: 'Lina Saad', driverId: 'D010', date: '2025-08-02', assigned_by: 'ZI001', assigned_at: new Date().toISOString(), remarks: 'Awaiting driver confirmation' },
+    { id: 'ORD774', customer: 'Noura Saad', store: 'Central Health', type: 'Standard', status: 'Assigned', cluster: 'Area B', driver: 'Lina Saad', driverId: 'D010', date: '2025-08-02', assigned_by: 'ZI001', assigned_at: new Date().toISOString(), remarks: 'Awaiting driver confirmation' },
   ],
   ongoing: [
     { id: 'ORD651', customer: 'Sara Hassan', store: 'Main Branch', driver: 'Khalid Ibrahim', driverId: 'D001', eta: '15 min', status: 'In Transit', type: 'Express', date: '2025-08-02', assigned_by: 'ZI001', remarks: 'High priority' },
@@ -23,13 +23,13 @@ const initialOrders = {
 };
 
 const availableDrivers = [
-    { id: 'D001', name: 'Khalid Ibrahim', cluster: 'Cluster A', availability: 'Available' },
-    { id: 'D004', name: 'Aisha Al-Ghamdi', cluster: 'Cluster B', availability: 'On Delivery' },
-    { id: 'D009', name: 'Zayn Malik', cluster: 'Cluster A', availability: 'Available' },
-    { id: 'D010', name: 'Lina Saad', cluster: 'Cluster B', availability: 'Available' },
+    { id: 'D001', name: 'Khalid Ibrahim', cluster: 'Area A', availability: 'Available' },
+    { id: 'D004', name: 'Aisha Al-Ghamdi', cluster: 'Area B', availability: 'On Delivery' },
+    { id: 'D009', name: 'Zayn Malik', cluster: 'Area A', availability: 'Available' },
+    { id: 'D010', name: 'Lina Saad', cluster: 'Area B', availability: 'Available' },
 ];
 
-const clusters = ['Cluster A', 'Cluster B'];
+const clusters = ['Area A', 'Area B'];
 
 function Overview() {
   const [activeTab, setActiveTab] = useState('pending');
@@ -169,7 +169,7 @@ function Overview() {
   );
 
   const headers = {
-      pending: ['Order ID', 'Customer', 'Store', 'Cluster', 'ETA', 'Actions'],
+      pending: ['Order ID', 'Customer', 'Store', 'Area', 'ETA', 'Actions'],
       assigned: ['Order ID', 'Customer', 'Store', 'Assigned Driver', 'ETA', 'Actions'],
       ongoing: ['Order ID', 'Customer', 'Store', 'Driver', 'ETA', 'Actions'],
       completed: ['Order ID', 'Customer', 'Store', 'Delivered At', 'ETA', 'Actions'],
@@ -180,8 +180,8 @@ function Overview() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-taiba-gray mb-1">Zone Dashboard</h2>
-            <p className="text-sm text-taiba-gray">Real-time overview of all deliveries in your zone.</p>
+            <h2 className="text-xl font-bold text-taiba-gray mb-1">Cluster Dashboard</h2>
+            <p className="text-sm text-taiba-gray">Real-time overview of all deliveries in your cluster.</p>
           </div>
           <div className="text-left sm:text-right mt-2 sm:mt-0">
             <p className="text-xs text-gray-500">Last Updated:</p>
@@ -196,7 +196,7 @@ function Overview() {
         <div className="bg-white rounded-xl shadow-md p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <select name="cluster" value={filters.cluster} onChange={handleFilterChange} className="input-field">
-                    <option value="All">All Clusters</option>
+                    <option value="All">All Areas</option>
                     {clusters.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
                 <input type="date" name="date" value={filters.date} onChange={handleFilterChange} className="input-field" />

@@ -17,7 +17,7 @@ function ViewZoneDetailsModal({ isOpen, onClose, zone }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Zone Details">
+    <Modal isOpen={isOpen} onClose={onClose} title="Cluster Details">
       <div className="space-y-6">
         <div className="flex items-center space-x-4">
           <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
@@ -25,7 +25,7 @@ function ViewZoneDetailsModal({ isOpen, onClose, zone }) {
           </div>
           <div>
             <h3 className="text-2xl font-bold text-taiba-gray">{zone.name}</h3>
-            <p className="text-taiba-gray">Zone ID: {zone.id}</p>
+            <p className="text-taiba-gray">Cluster ID: {zone.id}</p>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
@@ -59,12 +59,12 @@ function ViewZoneDetailsModal({ isOpen, onClose, zone }) {
         <div>
             <h4 className="font-semibold text-taiba-gray mb-2 flex items-center space-x-2">
                 <Puzzle className="w-5 h-5 text-taiba-purple" />
-                <span>Clusters ({zone.clusters.length})</span>
+                <span>Areas ({zone.subClusters ? zone.subClusters.length : 0})</span>
             </h4>
             <div className="flex flex-wrap gap-2">
-                {zone.clusters.length > 0 ? zone.clusters.map(c => (
+                {zone.subClusters && zone.subClusters.length > 0 ? zone.subClusters.map(c => (
                     <span key={c} className="px-3 py-1 bg-gray-100 text-taiba-gray rounded-full text-sm font-medium">{c}</span>
-                )) : <p className="text-sm text-gray-500">No clusters defined for this zone.</p>}
+                )) : <p className="text-sm text-gray-500">No areas defined for this cluster.</p>}
             </div>
         </div>
         <div className="flex justify-end pt-4">

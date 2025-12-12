@@ -16,7 +16,7 @@ const initialNotificationsData = [
         id: 'N022',
         timestamp: '2025-08-02 11:25:00',
         trigger: 'Order Ready for Pickup',
-        recipient: 'Zone Incharge & Driver',
+        recipient: 'Cluster Incharge & Driver',
         channel: 'WhatsApp / Push',
         message: '“Order #ORD103 is ready for pickup from Main Store.”',
     },

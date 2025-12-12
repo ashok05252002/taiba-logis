@@ -73,7 +73,7 @@ function DriverManagement() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
                     <div>
                         <h2 className="text-xl font-bold text-taiba-gray mb-1">Delivery Partner Management</h2>
-                        <p className="text-sm text-taiba-gray">Manage all delivery partners within your zone.</p>
+                        <p className="text-sm text-taiba-gray">Manage all delivery partners within your cluster.</p>
                     </div>
                     <button onClick={() => openModal('form')} className="flex items-center space-x-2 btn-primary px-6 py-2.5">
                         <UserPlus className="w-5 h-5" />

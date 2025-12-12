@@ -4,21 +4,21 @@ import { Download, FileText, SlidersHorizontal, Loader2, BarChart2 } from 'lucid
 import DataTable from '../../components/Tables/DataTable';
 
 // Mock data for filters
-const zones = ['North Zone', 'Central Zone'];
+const clusters = ['North Cluster', 'Central Cluster'];
 const incharges = ['Fatima Hassan', 'Omar Rashid', 'Aisha Ibrahim'];
 const drivers = ['Khalid Ibrahim', 'Noura Saad', 'Fahad Al-Mutairi'];
 
 const reportOptions = [
-  { value: 'zone', label: 'Zone Performance' },
-  { value: 'incharge', label: 'Zone Incharge Activity' },
+  { value: 'cluster', label: 'Cluster Performance' },
+  { value: 'incharge', label: 'Cluster Incharge Activity' },
   { value: 'driver', label: 'Delivery Partner Activity' },
   { value: 'feedback', label: 'Customer Feedback Summary' },
 ];
 
 // Mock data generation functions
-const generateZoneData = () => [
-  { zone: 'North Zone', completed: 312, delayed: 27, failed: 5, sla: 96 },
-  { zone: 'Central Zone', completed: 450, delayed: 15, failed: 2, sla: 98 },
+const generateClusterData = () => [
+  { cluster: 'North Cluster', completed: 312, delayed: 27, failed: 5, sla: 96 },
+  { cluster: 'Central Cluster', completed: 450, delayed: 15, failed: 2, sla: 98 },
 ];
 const generateInchargeData = () => [
   { incharge: 'Fatima Hassan', deliveries: 150, rejectionPercent: 2, avgTime: 38 },
@@ -52,7 +52,7 @@ function Reports() {
     setTimeout(() => {
       let data;
       switch (reportType) {
-        case 'zone': data = generateZoneData(); break;
+        case 'cluster': data = generateClusterData(); break;
         case 'incharge': data = generateInchargeData(); break;
         case 'driver': data = generateDriverData(); break;
         case 'feedback': data = generateFeedbackData(); break;
@@ -65,19 +65,19 @@ function Reports() {
 
   const renderFilters = () => {
     switch (reportType) {
-      case 'zone':
-        return <select name="zone" onChange={handleFilterChange} className="input-field"><option value="">All Zones</option>{zones.map(z => <option key={z}>{z}</option>)}</select>;
+      case 'cluster':
+        return <select name="cluster" onChange={handleFilterChange} className="input-field"><option value="">All Clusters</option>{clusters.map(z => <option key={z}>{z}</option>)}</select>;
       case 'incharge':
         return <select name="incharge" onChange={handleFilterChange} className="input-field"><option value="">All Incharges</option>{incharges.map(i => <option key={i}>{i}</option>)}</select>;
       case 'driver':
         return (
           <>
-            <select name="zone" onChange={handleFilterChange} className="input-field"><option value="">All Zones</option>{zones.map(z => <option key={z}>{z}</option>)}</select>
+            <select name="cluster" onChange={handleFilterChange} className="input-field"><option value="">All Clusters</option>{clusters.map(z => <option key={z}>{z}</option>)}</select>
             <select name="driver" onChange={handleFilterChange} className="input-field"><option value="">All Drivers</option>{drivers.map(d => <option key={d}>{d}</option>)}</select>
           </>
         );
       case 'feedback':
-        return <select name="zone" onChange={handleFilterChange} className="input-field"><option value="">All Zones</option>{zones.map(z => <option key={z}>{z}</option>)}</select>;
+        return <select name="cluster" onChange={handleFilterChange} className="input-field"><option value="">All Clusters</option>{clusters.map(z => <option key={z}>{z}</option>)}</select>;
       default:
         return <p className="text-sm text-taiba-gray col-span-full">Please select a report type to see available filters.</p>;
     }
@@ -103,8 +103,8 @@ function Reports() {
     }
     
     switch (reportType) {
-      case 'zone':
-        return <DataTable columns={[ { header: 'Zone', accessor: 'zone' }, { header: 'Completed', accessor: 'completed' }, { header: 'Delayed', accessor: 'delayed' }, { header: 'Failed', accessor: 'failed' }, { header: 'SLA Met (%)', accessor: 'sla' }]} data={reportData} />;
+      case 'cluster':
+        return <DataTable columns={[ { header: 'Cluster', accessor: 'cluster' }, { header: 'Completed', accessor: 'completed' }, { header: 'Delayed', accessor: 'delayed' }, { header: 'Failed', accessor: 'failed' }, { header: 'SLA Met (%)', accessor: 'sla' }]} data={reportData} />;
       case 'incharge':
         return (
           <ResponsiveContainer width="100%" height={400}>
@@ -143,7 +143,7 @@ function Reports() {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-bold text-taiba-gray mb-1">Reports & Analytics</h2>
-        <p className="text-sm text-taiba-gray">Generate and analyze performance reports for your zones.</p>
+        <p className="text-sm text-taiba-gray">Generate and analyze performance reports for your clusters.</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md p-6">

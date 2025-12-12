@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from '../../../components/common/Modal';
 
-function AddUserModal({ isOpen, onClose, onUserCreate }) {
+function AddUserModal({ isOpen, onClose, onUserCreate, defaultRole = '', lockedRole = false }) {
+  // Reset form when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      // Optional: Logic to reset form fields if not using uncontrolled inputs
+    }
+  }, [isOpen]);
+
   const handleUserCreation = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -17,7 +24,7 @@ function AddUserModal({ isOpen, onClose, onUserCreate }) {
       email,
       phone,
       role,
-      zone: 'Unassigned',
+      cluster: 'Unassigned',
       status: 'Active',
       temporaryPassword,
     };
@@ -26,16 +33,16 @@ function AddUserModal({ isOpen, onClose, onUserCreate }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create New User">
+    <Modal isOpen={isOpen} onClose={onClose} title={lockedRole ? "Add New Driver" : "Create New User"}>
       <form className="space-y-6" onSubmit={handleUserCreation}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-taiba-gray mb-2">Full Name</label>
-            <input name="name" type="text" className="input-field" placeholder="Enter user's full name" required />
+            <input name="name" type="text" className="input-field" placeholder="Enter full name" required />
           </div>
           <div>
             <label className="block text-sm font-medium text-taiba-gray mb-2">Email Address</label>
-            <input name="email" type="email" className="input-field" placeholder="Enter user's email" required />
+            <input name="email" type="email" className="input-field" placeholder="Enter email" required />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -45,32 +52,39 @@ function AddUserModal({ isOpen, onClose, onUserCreate }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-taiba-gray mb-2">Assign Role</label>
-            <select name="role" className="input-field" required>
+            <select 
+              name="role" 
+              className={`input-field ${lockedRole ? 'bg-gray-100 cursor-not-allowed' : ''}`} 
+              required 
+              defaultValue={defaultRole}
+              disabled={lockedRole}
+            >
               <option value="">Select a role</option>
               <option value="Delivery Admin">Delivery Admin</option>
-              <option value="Zone Incharge">Zone Incharge</option>
+              <option value="Cluster Incharge">Cluster Incharge</option>
               <option value="Store Incharge">Store Incharge</option>
               <option value="Driver">Driver</option>
             </select>
+            {lockedRole && <input type="hidden" name="role" value={defaultRole} />}
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-taiba-gray mb-2">Assign Zones of Responsibility</label>
+          <label className="block text-sm font-medium text-taiba-gray mb-2">Assign Clusters of Responsibility</label>
           <select multiple className="input-field h-32">
-            <option>North Zone</option>
-            <option>South Zone</option>
-            <option>East Zone</option>
-            <option>West Zone</option>
-            <option>Central Zone</option>
+            <option>North Cluster</option>
+            <option>South Cluster</option>
+            <option>East Cluster</option>
+            <option>West Cluster</option>
+            <option>Central Cluster</option>
           </select>
-          <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple zones.</p>
+          <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple clusters.</p>
         </div>
         <div className="flex justify-end space-x-4 pt-4">
           <button type="button" onClick={onClose} className="px-6 py-2 border border-gray-300 rounded-lg text-taiba-gray font-medium hover:bg-gray-50">
             Cancel
           </button>
           <button type="submit" className="btn-primary px-6 py-2">
-            Create User & Generate Credentials
+            {lockedRole ? "Add Driver" : "Create User"} & Generate Credentials
           </button>
         </div>
       </form>

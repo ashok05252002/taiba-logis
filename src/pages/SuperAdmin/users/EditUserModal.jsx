@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/common/Modal';
 
 function EditUserModal({ isOpen, onClose, user, onSave }) {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', role: '', zone: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', role: '', cluster: '' });
 
   useEffect(() => {
     if (user) {
@@ -11,7 +11,7 @@ function EditUserModal({ isOpen, onClose, user, onSave }) {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        zone: user.zone,
+        cluster: user.cluster,
       });
     }
   }, [user]);
@@ -50,20 +50,20 @@ function EditUserModal({ isOpen, onClose, user, onSave }) {
             <label className="block text-sm font-medium text-taiba-gray mb-2">Assign Role</label>
             <select name="role" className="input-field" value={formData.role} onChange={handleChange} required>
               <option value="Delivery Admin">Delivery Admin</option>
-              <option value="Zone Incharge">Zone Incharge</option>
+              <option value="Cluster Incharge">Cluster Incharge</option>
               <option value="Store Incharge">Store Incharge</option>
               <option value="Driver">Driver</option>
             </select>
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-taiba-gray mb-2">Assign Zone</label>
-          <select name="zone" className="input-field" value={formData.zone} onChange={handleChange}>
-            <option>North Zone</option>
-            <option>South Zone</option>
-            <option>East Zone</option>
-            <option>West Zone</option>
-            <option>Central Zone</option>
+          <label className="block text-sm font-medium text-taiba-gray mb-2">Assign Cluster</label>
+          <select name="cluster" className="input-field" value={formData.cluster} onChange={handleChange}>
+            <option>North Cluster</option>
+            <option>South Cluster</option>
+            <option>East Cluster</option>
+            <option>West Cluster</option>
+            <option>Central Cluster</option>
           </select>
         </div>
         <div className="flex justify-end space-x-4 pt-4">

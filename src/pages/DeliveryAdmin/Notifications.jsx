@@ -10,7 +10,7 @@ const initialNotificationsData = [
         trigger: 'Delivery Delay (> SLA)',
         recipient: 'Delivery Admin',
         channel: 'Push / In-App',
-        message: '“Order #ORD8876 delayed beyond SLA in North Zone.”',
+        message: '“Order #ORD8876 delayed beyond SLA in North Cluster.”',
     },
     {
         id: 'N012',
@@ -23,18 +23,18 @@ const initialNotificationsData = [
     {
         id: 'N013',
         timestamp: '2025-07-31 18:00:00',
-        trigger: 'New Zone Incharge Assigned',
+        trigger: 'New Cluster Incharge Assigned',
         recipient: 'Fatima Hassan',
         channel: 'Email / WhatsApp',
-        message: '“You’ve been assigned to manage North Zone.”',
+        message: '“You’ve been assigned to manage North Cluster.”',
     },
     {
         id: 'N014',
         timestamp: '2025-07-31 16:00:00',
-        trigger: 'Zone Incharge Deactivated',
+        trigger: 'Cluster Incharge Deactivated',
         recipient: 'Super Admin',
         channel: 'Email',
-        message: '“Zone Incharge "John Smith" has been deactivated by Delivery Admin.”',
+        message: '“Cluster Incharge "John Smith" has been deactivated by Delivery Admin.”',
     },
 ];
 

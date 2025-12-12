@@ -16,7 +16,7 @@ const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '' },
   { name: 'Delivery Oversight', icon: Truck, path: 'oversight' },
   { name: 'User Management', icon: Users, path: 'users' },
-  { name: 'Zone Management', icon: MapPin, path: 'zones' },
+  { name: 'Cluster Management', icon: MapPin, path: 'zones' },
   { name: 'Reports', icon: FileText, path: 'reports' },
   { name: 'Audit Logs', icon: History, path: 'audit-logs' },
   { name: 'Notifications', icon: Bell, path: 'notifications' },
@@ -26,12 +26,12 @@ const navigation = [
 function SuperAdminDashboard() {
   // This is a placeholder for a real state management solution
   // For now, we pass a dummy function to satisfy the prop requirement
-  const handleAssignment = (orderId, zone, driver) => {
-    console.log(`Assignment for ${orderId} confirmed with Zone: ${zone}, Driver: ${driver}. State update would happen here.`);
+  const handleAssignment = (orderId, cluster, driver) => {
+    console.log(`Assignment for ${orderId} confirmed with Cluster: ${cluster}, Driver: ${driver}. State update would happen here.`);
   };
 
   const dummyDrivers = ['Driver #12', 'Driver #07', 'Driver #21', 'Driver #03', 'Driver #33', 'Driver #45'];
-  const dummyZones = ['North', 'South', 'East', 'West', 'Central'];
+  const dummyClusters = ['North', 'South', 'East', 'West', 'Central'];
 
   return (
     <WebLayout
@@ -48,7 +48,7 @@ function SuperAdminDashboard() {
             <OrderDetailPage 
               onConfirmAssignment={handleAssignment} 
               drivers={dummyDrivers} 
-              zones={dummyZones} 
+              clusters={dummyClusters} 
             />
           } 
         />

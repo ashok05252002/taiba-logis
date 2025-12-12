@@ -4,13 +4,13 @@ import { Download, FileText, SlidersHorizontal, Loader2, BarChart2 } from 'lucid
 import DataTable from '../../components/Tables/DataTable';
 
 // Mock data for filters
-const zones = ['North Zone', 'South Zone', 'East Zone', 'West Zone', 'Central Zone'];
+const clusters = ['North Cluster', 'South Cluster', 'East Cluster', 'West Cluster', 'Central Cluster'];
 const admins = ['Ahmed Ali', 'Fatima Hassan', 'Mohammed Khan', 'Sara Abdullah', 'Omar Rashid'];
 const drivers = ['Driver #12', 'Driver #07', 'Driver #21', 'Driver #03', 'Driver #33', 'Driver #45'];
 
 const reportOptions = [
   { value: 'global', label: 'Global Performance Report' },
-  { value: 'zone', label: 'Zone-Level Performance' },
+  { value: 'cluster', label: 'Cluster-Level Performance' },
   { value: 'driver', label: 'Driver Performance' },
   { value: 'admin', label: 'Admin Efficiency' },
   { value: 'feedback', label: 'Customer Feedback Summary' },
@@ -22,12 +22,12 @@ const generateGlobalData = () => [
   { month: 'Mar', successRate: 95, sla: 97 }, { month: 'Apr', successRate: 93, sla: 94 },
   { month: 'May', successRate: 96, sla: 98 }, { month: 'Jun', successRate: 97, sla: 99 },
 ];
-const generateZoneData = () => [
-  { zone: 'North', avgTime: 35, delayPercent: 5, rejectionPercent: 2 },
-  { zone: 'South', avgTime: 42, delayPercent: 8, rejectionPercent: 3 },
-  { zone: 'East', avgTime: 48, delayPercent: 12, rejectionPercent: 4 },
-  { zone: 'West', avgTime: 39, delayPercent: 6, rejectionPercent: 2 },
-  { zone: 'Central', avgTime: 32, delayPercent: 3, rejectionPercent: 1 },
+const generateClusterData = () => [
+  { cluster: 'North', avgTime: 35, delayPercent: 5, rejectionPercent: 2 },
+  { cluster: 'South', avgTime: 42, delayPercent: 8, rejectionPercent: 3 },
+  { cluster: 'East', avgTime: 48, delayPercent: 12, rejectionPercent: 4 },
+  { cluster: 'West', avgTime: 39, delayPercent: 6, rejectionPercent: 2 },
+  { cluster: 'Central', avgTime: 32, delayPercent: 3, rejectionPercent: 1 },
 ];
 const generateDriverData = () => [
   { driver: 'Driver #12', completed: 152, avgTime: 28, rating: 4.8 },
@@ -36,9 +36,9 @@ const generateDriverData = () => [
   { driver: 'Driver #03', completed: 110, avgTime: 40, rating: 4.3 },
 ];
 const generateAdminData = () => [
-  { admin: 'Ahmed Ali', zonesManaged: 2, escalationRate: 95, avgResolutionTime: 2 },
-  { admin: 'Fatima Hassan', zonesManaged: 1, escalationRate: 98, avgResolutionTime: 1.5 },
-  { admin: 'Mohammed Khan', zonesManaged: 1, escalationRate: 92, avgResolutionTime: 3 },
+  { admin: 'Ahmed Ali', clustersManaged: 2, escalationRate: 95, avgResolutionTime: 2 },
+  { admin: 'Fatima Hassan', clustersManaged: 1, escalationRate: 98, avgResolutionTime: 1.5 },
+  { admin: 'Mohammed Khan', clustersManaged: 1, escalationRate: 92, avgResolutionTime: 3 },
 ];
 const generateFeedbackData = () => [
   { month: 'Jan', rating: 4.2 }, { month: 'Feb', rating: 4.4 }, { month: 'Mar', rating: 4.5 },
@@ -65,7 +65,7 @@ function Reports() {
       let data;
       switch (reportType) {
         case 'global': data = generateGlobalData(); break;
-        case 'zone': data = generateZoneData(); break;
+        case 'cluster': data = generateClusterData(); break;
         case 'driver': data = generateDriverData(); break;
         case 'admin': data = generateAdminData(); break;
         case 'feedback': data = generateFeedbackData(); break;
@@ -83,13 +83,13 @@ function Reports() {
           <>
             <input type="date" name="startDate" onChange={handleFilterChange} className="input-field" />
             <input type="date" name="endDate" onChange={handleFilterChange} className="input-field" />
-            <select name="zone" onChange={handleFilterChange} className="input-field"><option value="">All Zones</option>{zones.map(z => <option key={z}>{z}</option>)}</select>
+            <select name="cluster" onChange={handleFilterChange} className="input-field"><option value="">All Clusters</option>{clusters.map(z => <option key={z}>{z}</option>)}</select>
           </>
         );
-      case 'zone':
+      case 'cluster':
         return (
           <>
-            <select name="zone" onChange={handleFilterChange} className="input-field"><option value="">All Zones</option>{zones.map(z => <option key={z}>{z}</option>)}</select>
+            <select name="cluster" onChange={handleFilterChange} className="input-field"><option value="">All Clusters</option>{clusters.map(z => <option key={z}>{z}</option>)}</select>
             <select name="admin" onChange={handleFilterChange} className="input-field"><option value="">All Admins</option>{admins.map(a => <option key={a}>{a}</option>)}</select>
           </>
         );
@@ -97,7 +97,7 @@ function Reports() {
         return (
           <>
             <select name="driver" onChange={handleFilterChange} className="input-field"><option value="">All Drivers</option>{drivers.map(d => <option key={d}>{d}</option>)}</select>
-            <select name="zone" onChange={handleFilterChange} className="input-field"><option value="">All Zones</option>{zones.map(z => <option key={z}>{z}</option>)}</select>
+            <select name="cluster" onChange={handleFilterChange} className="input-field"><option value="">All Clusters</option>{clusters.map(z => <option key={z}>{z}</option>)}</select>
           </>
         );
       case 'admin':
@@ -147,8 +147,8 @@ function Reports() {
             </LineChart>
           </ResponsiveContainer>
         );
-      case 'zone':
-        return <DataTable columns={[ { header: 'Zone', accessor: 'zone' }, { header: 'Avg. Time (min)', accessor: 'avgTime' }, { header: 'Delay %', accessor: 'delayPercent' }, { header: 'Rejection %', accessor: 'rejectionPercent' }]} data={reportData} />;
+      case 'cluster':
+        return <DataTable columns={[ { header: 'Cluster', accessor: 'cluster' }, { header: 'Avg. Time (min)', accessor: 'avgTime' }, { header: 'Delay %', accessor: 'delayPercent' }, { header: 'Rejection %', accessor: 'rejectionPercent' }]} data={reportData} />;
       case 'driver':
         return <DataTable columns={[ { header: 'Driver', accessor: 'driver' }, { header: 'Completed Orders', accessor: 'completed' }, { header: 'Avg. Time (min)', accessor: 'avgTime' }, { header: 'Avg. Rating', accessor: 'rating' }]} data={reportData} />;
       case 'admin':

@@ -32,7 +32,7 @@ function ViewUserDetailsModal({ isOpen, onClose, user }) {
           </div>
           <div className="flex items-center space-x-3">
             <MapPin className="w-5 h-5 text-taiba-purple" />
-            <span className="text-taiba-gray">{user.zone}</span>
+            <span className="text-taiba-gray">{user.cluster}</span>
           </div>
           <div className="flex items-center space-x-3">
             {user.status === 'Active' ? (

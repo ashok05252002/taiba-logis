@@ -15,7 +15,7 @@ import OrderDetailPage from '../shared/OrderDetailPage';
 const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '' },
   { name: 'Order & Delivery Monitoring', icon: Truck, path: 'oversight' },
-  { name: 'Zone Management', icon: MapPin, path: 'zones' },
+  { name: 'Cluster Management', icon: MapPin, path: 'zones' },
   { name: 'Driver Management', icon: Users, path: 'drivers' },
   { name: 'Escalations', icon: ShieldAlert, path: 'escalations' },
   { name: 'Reports', icon: FileText, path: 'reports' },

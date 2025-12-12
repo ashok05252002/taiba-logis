@@ -18,12 +18,12 @@ const auditLogData = [
   {
     id: 'L002',
     timestamp: '2025-08-01 09:45:00',
-    eventType: 'ZONE_UPDATE',
+    eventType: 'CLUSTER_UPDATE',
     performedBy: 'Super Admin',
     ipAddress: '192.168.1.1',
     details: {
-      zoneId: 'Z001',
-      zoneName: 'North Zone',
+      clusterId: 'Z001',
+      clusterName: 'North Cluster',
       field: 'admin',
       oldValue: 'Ahmed Ali',
       newValue: 'Yusuf Ahmed'
@@ -47,7 +47,7 @@ const auditLogData = [
     performedBy: 'Super Admin',
     ipAddress: '192.168.1.1',
     details: {
-      roleName: 'Zone Incharge',
+      roleName: 'Cluster Incharge',
       changes: 'Added "Handle Escalations" permission'
     }
   },
@@ -82,7 +82,7 @@ const EventTypeBadge = ({ eventType }) => {
   const config = {
     USER_CREATION: { icon: UserPlus, color: 'blue' },
     USER_MODIFICATION: { icon: UserPlus, color: 'blue' },
-    ZONE_UPDATE: { icon: MapPin, color: 'purple' },
+    CLUSTER_UPDATE: { icon: MapPin, color: 'purple' },
     API_INTEGRATION_CHANGE: { icon: Zap, color: 'orange' },
     ROLE_PERMISSION_CHANGE: { icon: Shield, color: 'green' },
     default: { icon: null, color: 'gray' }
@@ -112,10 +112,10 @@ const DetailsRenderer = ({ row }) => {
       return `User "${details.userName}" (ID: ${details.userId}) was created with role "${details.role}".`;
     case 'USER_MODIFICATION':
       return `User "${details.userName}" (ID: ${details.userId}): ${details.change}.`;
-    case 'ZONE_UPDATE':
+    case 'CLUSTER_UPDATE':
       return (
         <p className="max-w-md whitespace-normal">
-          Zone "{details.zoneName}" (ID: {details.zoneId}): field <span className="font-semibold">"{details.field}"</span> changed from <span className="text-red-600">"{details.oldValue}"</span> to <span className="text-green-600">"{details.newValue}"</span>.
+          Cluster "{details.clusterName}" (ID: {details.clusterId}): field <span className="font-semibold">"{details.field}"</span> changed from <span className="text-red-600">"{details.oldValue}"</span> to <span className="text-green-600">"{details.newValue}"</span>.
         </p>
       );
     case 'API_INTEGRATION_CHANGE':

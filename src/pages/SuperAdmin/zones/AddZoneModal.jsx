@@ -8,11 +8,11 @@ function AddZoneModal({ isOpen, onClose, onZoneCreate, admins }) {
     const name = formData.get('name');
     const region = formData.get('region');
     const adminId = formData.get('adminId');
-    const clusters = formData.get('clusters').split(',').map(c => c.trim()).filter(Boolean);
+    const subClusters = formData.get('subClusters').split(',').map(c => c.trim()).filter(Boolean);
     const selectedAdmin = admins.find(a => a.id === adminId);
 
-    const newZone = {
-      id: `Z${Math.floor(Math.random() * 900) + 100}`,
+    const newCluster = {
+      id: `C${Math.floor(Math.random() * 900) + 100}`,
       name,
       region,
       admin: selectedAdmin ? selectedAdmin.name : 'Unassigned',
@@ -21,20 +21,20 @@ function AddZoneModal({ isOpen, onClose, onZoneCreate, admins }) {
       incharges: '0',
       orders: '0',
       status: 'Active',
-      clusters,
+      subClusters,
       createdAt: new Date().toISOString(),
     };
     
-    onZoneCreate(newZone);
+    onZoneCreate(newCluster);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create New Zone">
+    <Modal isOpen={isOpen} onClose={onClose} title="Create New Cluster">
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-taiba-gray mb-2">Zone Name</label>
-            <input name="name" type="text" className="input-field" placeholder="e.g., North-East Sector" required />
+            <label className="block text-sm font-medium text-taiba-gray mb-2">Cluster Name</label>
+            <input name="name" type="text" className="input-field" placeholder="e.g., North-East Cluster" required />
           </div>
           <div>
             <label className="block text-sm font-medium text-taiba-gray mb-2">Region</label>
@@ -51,15 +51,15 @@ function AddZoneModal({ isOpen, onClose, onZoneCreate, admins }) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-taiba-gray mb-2">Define Clusters</label>
-          <textarea name="clusters" className="input-field" rows="3" placeholder="Enter cluster names, separated by commas (e.g., Cluster A, Cluster B)"></textarea>
+          <label className="block text-sm font-medium text-taiba-gray mb-2">Define Areas/Sub-clusters</label>
+          <textarea name="subClusters" className="input-field" rows="3" placeholder="Enter area names, separated by commas (e.g., Area A, Area B)"></textarea>
         </div>
         <div className="flex justify-end space-x-4 pt-4">
           <button type="button" onClick={onClose} className="px-6 py-2 border border-gray-300 rounded-lg text-taiba-gray font-medium hover:bg-gray-50">
             Cancel
           </button>
           <button type="submit" className="btn-primary px-6 py-2">
-            Create Zone
+            Create Cluster
           </button>
         </div>
       </form>

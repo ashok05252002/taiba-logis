@@ -8,7 +8,7 @@ const initialRoles = [
     description: 'Has full system access and can configure everything.',
     permissions: [
       'Manage All Users & Roles',
-      'Manage All Zones & Clusters',
+      'Manage All Clusters & Areas',
       'Configure System Settings',
       'View Global Reports & Audit Logs',
     ],
@@ -17,19 +17,19 @@ const initialRoles = [
   },
   {
     name: 'Delivery Admin',
-    description: 'Manages operations within their assigned zones.',
+    description: 'Manages operations within their assigned clusters.',
     permissions: [
-      'Manage Zone Incharges',
-      'Manage Drivers in Zone',
-      'View Zone-specific Reports',
+      'Manage Cluster Incharges',
+      'Manage Drivers in Cluster',
+      'View Cluster-specific Reports',
       'Handle Escalations',
     ],
     icon: UserCog,
     color: 'taiba-purple',
   },
   {
-    name: 'Zone Incharge',
-    description: 'Oversees daily deliveries and drivers in a specific zone.',
+    name: 'Cluster Incharge',
+    description: 'Oversees daily deliveries and drivers in a specific cluster.',
     permissions: [
       'Assign Orders to Drivers',
       'Track Live Deliveries',

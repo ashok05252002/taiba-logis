@@ -21,7 +21,7 @@ function AssignInchargeModal({ isOpen, onClose, zone, incharges, onAssign }) {
         <Modal isOpen={isOpen} onClose={onClose} title={`Assign Incharge for ${zone.name}`}>
             <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
-                    <label className="block text-sm font-medium text-taiba-gray mb-2">Select Zone Incharge</label>
+                    <label className="block text-sm font-medium text-taiba-gray mb-2">Select Cluster Incharge</label>
                     <select
                         value={selectedIncharge}
                         onChange={(e) => setSelectedIncharge(e.target.value)}

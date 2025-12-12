@@ -6,10 +6,10 @@ import ManageClustersModal from './zones/ManageClustersModal';
 import ToggleZoneStatusModal from './zones/ToggleZoneStatusModal';
 import ViewZoneDetailsModal from './zones/ViewZoneDetailsModal';
 
-const initialZones = [
-    { id: 'Z001', name: 'North Zone', incharge: 'Fatima Hassan', inchargeId: 'U002', clusters: ['Cluster A', 'Cluster B'], drivers: 24, status: 'Active', assigned_by: 'Ahmed Ali (DA001)', assigned_at: '2025-07-28T10:00:00Z' },
-    { id: 'Z005', name: 'Central Zone', incharge: 'Omar Rashid', inchargeId: 'U005', clusters: ['Cluster G', 'Cluster H', 'Cluster I'], drivers: 28, status: 'Active', assigned_by: 'Ahmed Ali (DA001)', assigned_at: '2025-07-29T11:30:00Z' },
-    { id: 'Z006', name: 'Capital City Zone', incharge: 'Unassigned', inchargeId: null, clusters: [], drivers: 0, status: 'Inactive', assigned_by: null, assigned_at: null },
+const initialClusters = [
+    { id: 'Z001', name: 'North Cluster', incharge: 'Fatima Hassan', inchargeId: 'U002', subClusters: ['Area A', 'Area B'], drivers: 24, status: 'Active', assigned_by: 'Ahmed Ali (DA001)', assigned_at: '2025-07-28T10:00:00Z' },
+    { id: 'Z005', name: 'Central Cluster', incharge: 'Omar Rashid', inchargeId: 'U005', subClusters: ['Area G', 'Area H', 'Area I'], drivers: 28, status: 'Active', assigned_by: 'Ahmed Ali (DA001)', assigned_at: '2025-07-29T11:30:00Z' },
+    { id: 'Z006', name: 'Capital City Cluster', incharge: 'Unassigned', inchargeId: null, subClusters: [], drivers: 0, status: 'Inactive', assigned_by: null, assigned_at: null },
 ];
 
 const availableIncharges = [
@@ -20,8 +20,8 @@ const availableIncharges = [
 ];
 
 function ZoneManagement() {
-    const [zones, setZones] = useState(initialZones);
-    const [selectedZone, setSelectedZone] = useState(null);
+    const [clusters, setClusters] = useState(initialClusters);
+    const [selectedCluster, setSelectedCluster] = useState(null);
     const [modalState, setModalState] = useState({
         assignIncharge: false,
         manageClusters: false,
@@ -41,20 +41,20 @@ function ZoneManagement() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const openModal = (modal, zone) => {
-        setSelectedZone(zone);
+    const openModal = (modal, cluster) => {
+        setSelectedCluster(cluster);
         setModalState(prev => ({ ...Object.keys(prev).reduce((acc, key) => ({ ...acc, [key]: false }), {}), [modal]: true }));
         setOpenActionMenu(null);
     };
 
     const closeModal = () => {
         setModalState(prev => ({ ...Object.keys(prev).reduce((acc, key) => ({ ...acc, [key]: false }), {}) }));
-        setSelectedZone(null);
+        setSelectedCluster(null);
     };
 
-    const handleAssignIncharge = (zoneId, inchargeId) => {
+    const handleAssignIncharge = (clusterId, inchargeId) => {
         const incharge = availableIncharges.find(i => i.id === inchargeId);
-        setZones(prev => prev.map(z => z.id === zoneId ? { 
+        setClusters(prev => prev.map(z => z.id === clusterId ? { 
             ...z, 
             incharge: incharge.name, 
             inchargeId,
@@ -64,21 +64,21 @@ function ZoneManagement() {
         closeModal();
     };
 
-    const handleSaveClusters = (zoneId, newClusters) => {
-        setZones(prev => prev.map(z => z.id === zoneId ? { ...z, clusters: newClusters } : z));
+    const handleSaveSubClusters = (clusterId, newSubClusters) => {
+        setClusters(prev => prev.map(z => z.id === clusterId ? { ...z, subClusters: newSubClusters } : z));
         closeModal();
     };
 
     const handleConfirmToggleStatus = () => {
-        if (!selectedZone) return;
-        setZones(prev => prev.map(z => z.id === selectedZone.id ? { ...z, status: z.status === 'Active' ? 'Inactive' : 'Active' } : z));
+        if (!selectedCluster) return;
+        setClusters(prev => prev.map(z => z.id === selectedCluster.id ? { ...z, status: z.status === 'Active' ? 'Inactive' : 'Active' } : z));
         closeModal();
     };
 
     const columns = [
-        { header: 'Zone Name', accessor: 'name' },
+        { header: 'Cluster Name', accessor: 'name' },
         { header: 'Assigned Incharge', accessor: 'incharge' },
-        { header: 'Clusters', render: (row) => row.clusters.length },
+        { header: 'Areas', render: (row) => row.subClusters ? row.subClusters.length : 0 },
         { header: 'Active Drivers', accessor: 'drivers' },
         {
             header: 'Status', accessor: 'status',
@@ -107,11 +107,11 @@ function ZoneManagement() {
                             </button>
                             <button onClick={() => openModal('manageClusters', row)} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
                                 <Puzzle className="w-4 h-4" />
-                                <span>Manage Clusters</span>
+                                <span>Manage Areas</span>
                             </button>
                             <button onClick={() => openModal('toggleStatus', row)} className={`w-full text-left flex items-center space-x-2 px-4 py-2 text-sm ${row.status === 'Active' ? 'text-red-600 hover:bg-red-50' : 'text-green-600 hover:bg-green-50'}`}>
                                 {row.status === 'Active' ? <ToggleLeft className="w-4 h-4" /> : <ToggleRight className="w-4 h-4" />}
-                                <span>{row.status === 'Active' ? 'Deactivate Zone' : 'Activate Zone'}</span>
+                                <span>{row.status === 'Active' ? 'Deactivate Cluster' : 'Activate Cluster'}</span>
                             </button>
                         </div>
                     )}
@@ -124,16 +124,16 @@ function ZoneManagement() {
         <>
             <div className="space-y-6">
                 <div>
-                    <h2 className="text-xl font-bold text-taiba-gray mb-1">Zone & Cluster Management</h2>
-                    <p className="text-sm text-taiba-gray">Manage zones, assign incharges, and define clusters.</p>
+                    <h2 className="text-xl font-bold text-taiba-gray mb-1">Cluster Management</h2>
+                    <p className="text-sm text-taiba-gray">Manage clusters, assign incharges, and define areas.</p>
                 </div>
-                <DataTable columns={columns} data={zones} />
+                <DataTable columns={columns} data={clusters} />
             </div>
 
             <AssignInchargeModal
                 isOpen={modalState.assignIncharge}
                 onClose={closeModal}
-                zone={selectedZone}
+                zone={selectedCluster}
                 incharges={availableIncharges}
                 onAssign={handleAssignIncharge}
             />
@@ -141,21 +141,21 @@ function ZoneManagement() {
             <ManageClustersModal
                 isOpen={modalState.manageClusters}
                 onClose={closeModal}
-                zone={selectedZone}
-                onSave={handleSaveClusters}
+                zone={selectedCluster}
+                onSave={handleSaveSubClusters}
             />
 
             <ToggleZoneStatusModal
                 isOpen={modalState.toggleStatus}
                 onClose={closeModal}
-                zone={selectedZone}
+                zone={selectedCluster}
                 onConfirm={handleConfirmToggleStatus}
             />
             
             <ViewZoneDetailsModal
                 isOpen={modalState.viewDetails}
                 onClose={closeModal}
-                zone={selectedZone}
+                zone={selectedCluster}
             />
         </>
     );

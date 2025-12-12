@@ -6,7 +6,7 @@ function CreateOrderModal({ isOpen, onClose, onCreateOrder }) {
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [customerAddress, setCustomerAddress] = useState('');
-    const [zone, setZone] = useState('North');
+    const [cluster, setCluster] = useState('North');
     const [deliveryType, setDeliveryType] = useState('Standard Delivery');
     const [items, setItems] = useState([{ name: '', qty: 1, price: '' }]);
 
@@ -32,7 +32,7 @@ function CreateOrderModal({ isOpen, onClose, onCreateOrder }) {
             customer: customerName,
             phone: customerPhone,
             address: customerAddress,
-            zone,
+            cluster,
             deliveryType,
             source: 'Manual', // Source is always Manual for this form
             items,
@@ -75,8 +75,8 @@ function CreateOrderModal({ isOpen, onClose, onCreateOrder }) {
                     <legend className="text-lg font-semibold text-taiba-gray px-2">Order Details</legend>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-taiba-gray mb-2">Zone</label>
-                            <select value={zone} onChange={(e) => setZone(e.target.value)} className="input-field">
+                            <label className="block text-sm font-medium text-taiba-gray mb-2">Cluster</label>
+                            <select value={cluster} onChange={(e) => setCluster(e.target.value)} className="input-field">
                                 <option>North</option>
                                 <option>South</option>
                                 <option>East</option>

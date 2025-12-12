@@ -45,7 +45,7 @@ function ManualAssignOrderModal({ isOpen, onClose, onAssign, drivers, unassigned
             driverName: driver.name,
             assignmentType: 'Manual',
             remarks,
-            assigned_by: 'Fatima Hassan (Zone Incharge)', // Hardcoded for example
+            assigned_by: 'Fatima Hassan (Cluster Incharge)', // Hardcoded for example
         });
     };
 

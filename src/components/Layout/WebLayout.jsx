@@ -13,7 +13,7 @@ function WebLayout({ children, navItems, title, userRole }) {
   };
 
   const notifications = [
-    { icon: AlertCircle, text: 'Zone A exceeded SLA threshold (15%).', time: '5m ago', color: 'red' },
+    { icon: AlertCircle, text: 'Cluster A exceeded SLA threshold (15%).', time: '5m ago', color: 'red' },
     { icon: Package, text: 'New high-priority order #ORD8876 assigned.', time: '12m ago', color: 'blue' },
     { icon: User, text: 'Delivery Admin "John Doe" created.', time: '1h ago', color: 'green' },
   ];

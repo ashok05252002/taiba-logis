@@ -9,14 +9,14 @@ const userTabs = [
   { id: 'drivers', name: 'Drivers' },
 ];
 
-const zoneTabs = [
-  { id: 'all', name: 'All Zones' },
+const clusterTabs = [
+  { id: 'all', name: 'All Clusters' },
   { id: 'active', name: 'Active' },
   { id: 'inactive', name: 'Inactive' },
 ];
 
-function UserList({ users, onOpenModal, isZoneList = false }) {
-  const tabs = isZoneList ? zoneTabs : userTabs;
+function UserList({ users, onOpenModal, isClusterList = false }) {
+  const tabs = isClusterList ? clusterTabs : userTabs;
   const [activeTab, setActiveTab] = useState('all');
   const [openActionMenu, setOpenActionMenu] = useState(null);
   const actionMenuRef = useRef(null);
@@ -37,7 +37,7 @@ function UserList({ users, onOpenModal, isZoneList = false }) {
     { header: 'User ID', accessor: 'id' },
     { header: 'Name', accessor: 'name' },
     { header: 'Role', accessor: 'role' },
-    { header: 'Assigned Zone(s)', accessor: 'zone' },
+    { header: 'Assigned Cluster(s)', accessor: 'cluster' },
     {
       header: 'Status', accessor: 'status',
       render: (row) => (
@@ -48,9 +48,9 @@ function UserList({ users, onOpenModal, isZoneList = false }) {
     },
   ];
   
-  const zoneColumns = [
-    { header: 'Zone ID', accessor: 'id' },
-    { header: 'Zone Name', accessor: 'name' },
+  const clusterColumns = [
+    { header: 'Cluster ID', accessor: 'id' },
+    { header: 'Cluster Name', accessor: 'name' },
     { header: 'Assigned Admin', accessor: 'admin' },
     { header: 'Active Drivers', accessor: 'drivers' },
     { header: 'Orders Today', accessor: 'orders' },
@@ -80,9 +80,9 @@ function UserList({ users, onOpenModal, isZoneList = false }) {
             </button>
             <button onClick={() => { onOpenModal('edit', row); setOpenActionMenu(null); }} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
               <Edit className="w-4 h-4" />
-              <span>Edit {isZoneList ? 'Zone' : 'User'}</span>
+              <span>Edit {isClusterList ? 'Cluster' : 'User'}</span>
             </button>
-            {!isZoneList && (
+            {!isClusterList && (
               <button onClick={() => { onOpenModal('reset', row); setOpenActionMenu(null); }} className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50">
                 <KeyRound className="w-4 h-4" />
                 <span>Reset Password</span>
@@ -98,11 +98,11 @@ function UserList({ users, onOpenModal, isZoneList = false }) {
     ),
   };
 
-  const columns = isZoneList ? [...zoneColumns, actionColumn] : [...userColumns, actionColumn];
+  const columns = isClusterList ? [...clusterColumns, actionColumn] : [...userColumns, actionColumn];
 
   const filteredData = users.filter(item => {
     if (activeTab === 'all') return true;
-    if (isZoneList) {
+    if (isClusterList) {
       return item.status.toLowerCase() === activeTab;
     } else {
       if (activeTab === 'admins') return item.role === 'Delivery Admin';

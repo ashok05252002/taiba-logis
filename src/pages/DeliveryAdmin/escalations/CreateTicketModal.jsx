@@ -29,7 +29,7 @@ function CreateTicketModal({ isOpen, onClose, onCreate, incharges }) {
                     <textarea name="issue" className="input-field" rows="4" placeholder="Describe the issue in detail" required></textarea>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-taiba-gray mb-2">Assign to Zone Incharge</label>
+                    <label className="block text-sm font-medium text-taiba-gray mb-2">Assign to Cluster Incharge</label>
                     <select name="assignedTo" className="input-field" required>
                         <option value="">Select an Incharge</option>
                         {incharges.map(incharge => (

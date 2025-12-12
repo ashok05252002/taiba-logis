@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/common/Modal';
 
 function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
-  const [formData, setFormData] = useState({ name: '', region: '', adminId: '', clusters: '' });
+  const [formData, setFormData] = useState({ name: '', region: '', adminId: '', subClusters: '' });
 
   useEffect(() => {
     if (zone) {
@@ -10,7 +10,7 @@ function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
         name: zone.name,
         region: zone.region,
         adminId: zone.adminId,
-        clusters: zone.clusters.join(', '),
+        subClusters: zone.subClusters ? zone.subClusters.join(', ') : '',
       });
     }
   }, [zone]);
@@ -29,16 +29,16 @@ function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
       ...zone, 
       ...formData,
       admin: selectedAdmin ? selectedAdmin.name : 'Unassigned',
-      clusters: formData.clusters.split(',').map(c => c.trim()).filter(Boolean),
+      subClusters: formData.subClusters.split(',').map(c => c.trim()).filter(Boolean),
     });
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Zone">
+    <Modal isOpen={isOpen} onClose={onClose} title="Edit Cluster">
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-taiba-gray mb-2">Zone Name</label>
+            <label className="block text-sm font-medium text-taiba-gray mb-2">Cluster Name</label>
             <input name="name" type="text" className="input-field" value={formData.name} onChange={handleChange} required />
           </div>
           <div>
@@ -55,8 +55,8 @@ function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-taiba-gray mb-2">Define Clusters</label>
-          <textarea name="clusters" className="input-field" rows="3" value={formData.clusters} onChange={handleChange}></textarea>
+          <label className="block text-sm font-medium text-taiba-gray mb-2">Define Areas/Sub-clusters</label>
+          <textarea name="subClusters" className="input-field" rows="3" value={formData.subClusters} onChange={handleChange}></textarea>
         </div>
         <div className="flex justify-end space-x-4 pt-4">
           <button type="button" onClick={onClose} className="px-6 py-2 border border-gray-300 rounded-lg text-taiba-gray font-medium hover:bg-gray-50">

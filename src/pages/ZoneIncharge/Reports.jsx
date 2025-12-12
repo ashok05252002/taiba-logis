@@ -9,9 +9,9 @@ const dailySummaryData = [
 ];
 
 const manualAssignmentLogData = [
-    { timestamp: '2025-08-01 14:30:15', orderId: 'ORD771', driverId: 'D001', clusterId: 'Cluster A', remarks: 'High priority customer', assignedBy: 'ZI001' },
-    { timestamp: '2025-08-01 11:15:00', orderId: 'ORD772', driverId: 'D010', clusterId: 'Cluster B', remarks: '', assignedBy: 'ZI001' },
-    { timestamp: '2025-07-31 18:00:00', orderId: 'ORD765', driverId: 'D009', clusterId: 'Cluster A', remarks: 'REASSIGN: Original driver had vehicle issue.', assignedBy: 'ZI001' },
+    { timestamp: '2025-08-01 14:30:15', orderId: 'ORD771', driverId: 'D001', clusterId: 'Area A', remarks: 'High priority customer', assignedBy: 'ZI001' },
+    { timestamp: '2025-08-01 11:15:00', orderId: 'ORD772', driverId: 'D010', clusterId: 'Area B', remarks: '', assignedBy: 'ZI001' },
+    { timestamp: '2025-07-31 18:00:00', orderId: 'ORD765', driverId: 'D009', clusterId: 'Area A', remarks: 'REASSIGN: Original driver had vehicle issue.', assignedBy: 'ZI001' },
 ];
 
 function Reports() {
@@ -37,7 +37,7 @@ function Reports() {
         <div className="space-y-6">
             <div>
                 <h2 className="text-xl font-bold text-taiba-gray mb-1">Audit & Reporting</h2>
-                <p className="text-sm text-taiba-gray">Review performance reports and audit logs for your zone.</p>
+                <p className="text-sm text-taiba-gray">Review performance reports and audit logs for your cluster.</p>
             </div>
             
             <div className="bg-white rounded-xl shadow-md overflow-hidden">

@@ -21,8 +21,8 @@ const navigation = [
 function ZoneInchargeDashboard() {
   return (
     <WebLayout
-      title="Zone Incharge"
-      userRole="Zone Operations Manager - North Zone"
+      title="Cluster Incharge"
+      userRole="Cluster Operations Manager - North Cluster"
       navItems={navigation}
     >
       <Routes>

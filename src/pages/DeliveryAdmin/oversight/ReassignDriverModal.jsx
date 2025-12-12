@@ -7,7 +7,7 @@ function ReassignDriverModal({ isOpen, onClose, delivery, drivers, onConfirm }) 
 
   useEffect(() => {
     if (delivery && drivers) {
-      const filtered = drivers.filter(d => d.zone === delivery.zone);
+      const filtered = drivers.filter(d => d.cluster === delivery.cluster);
       setAvailableDrivers(filtered);
       setNewDriverId(drivers.find(d => d.name === delivery.driver)?.id || '');
     }
@@ -29,7 +29,7 @@ function ReassignDriverModal({ isOpen, onClose, delivery, drivers, onConfirm }) 
           <p className="text-sm text-taiba-gray">{delivery.driver}</p>
         </div>
         <div>
-            <label className="block text-sm font-medium text-taiba-gray mb-2">Select Available Driver from {delivery.zone}</label>
+            <label className="block text-sm font-medium text-taiba-gray mb-2">Select Available Driver from {delivery.cluster}</label>
             <div className="space-y-2 border rounded-lg p-2 max-h-48 overflow-y-auto">
               {availableDrivers.length > 0 ? availableDrivers.map(driver => (
                 <label key={driver.id} className={`flex items-center justify-between p-3 rounded-md transition-colors ${driver.status !== 'Available' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'cursor-pointer hover:bg-blue-50'}`}>
@@ -53,7 +53,7 @@ function ReassignDriverModal({ isOpen, onClose, delivery, drivers, onConfirm }) 
                         {driver.status}
                     </span>
                 </label>
-              )) : <p className="text-sm text-center text-gray-500 p-4">No drivers found for this zone.</p>}
+              )) : <p className="text-sm text-center text-gray-500 p-4">No drivers found for this cluster.</p>}
             </div>
         </div>
         <div className="flex justify-end space-x-4 pt-4">
