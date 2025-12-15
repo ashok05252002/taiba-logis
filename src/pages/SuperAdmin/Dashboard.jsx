@@ -1,11 +1,14 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import WebLayout from '../../components/Layout/WebLayout';
-import { LayoutDashboard, Users, MapPin, Settings, FileText, Truck, History, Bell } from 'lucide-react';
+import { LayoutDashboard, Users, MapPin, Settings, FileText, Truck, History, Bell, Briefcase } from 'lucide-react';
 import Overview from './Overview';
 import UserManagement from './UserManagement';
 import ZoneManagement from './ZoneManagement';
 import DeliveryOversight from './DeliveryOversight';
+import DeliveryManagement from './DeliveryManagement';
+import DeliveryPersonForm from './delivery/DeliveryPersonForm';
+import DeliveryPersonDetails from './delivery/DeliveryPersonDetails';
 import Reports from './Reports';
 import AuditLogs from './AuditLogs';
 import Notifications from './Notifications';
@@ -15,6 +18,7 @@ import OrderDetailPage from '../shared/OrderDetailPage';
 const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '' },
   { name: 'Delivery Oversight', icon: Truck, path: 'oversight' },
+  { name: 'Delivery Management', icon: Briefcase, path: 'delivery-management' },
   { name: 'User Management', icon: Users, path: 'users' },
   { name: 'Cluster Management', icon: MapPin, path: 'zones' },
   { name: 'Reports', icon: FileText, path: 'reports' },
@@ -25,7 +29,6 @@ const navigation = [
 
 function SuperAdminDashboard() {
   // This is a placeholder for a real state management solution
-  // For now, we pass a dummy function to satisfy the prop requirement
   const handleAssignment = (orderId, cluster, driver) => {
     console.log(`Assignment for ${orderId} confirmed with Cluster: ${cluster}, Driver: ${driver}. State update would happen here.`);
   };
@@ -52,6 +55,11 @@ function SuperAdminDashboard() {
             />
           } 
         />
+        <Route path="/delivery-management" element={<DeliveryManagement />} />
+        <Route path="/delivery-management/add" element={<DeliveryPersonForm />} />
+        <Route path="/delivery-management/edit/:id" element={<DeliveryPersonForm />} />
+        <Route path="/delivery-management/view/:id" element={<DeliveryPersonDetails />} />
+        
         <Route path="/users/*" element={<UserManagement />} />
         <Route path="/zones" element={<ZoneManagement />} />
         <Route path="/reports" element={<Reports />} />
