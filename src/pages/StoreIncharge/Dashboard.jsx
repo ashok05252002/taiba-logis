@@ -12,30 +12,44 @@ import SecurityAudit from './SecurityAudit';
 import OrderDetailPage from './components/OrderDetailPage';
 
 const initialOrdersData = {
-  pending: [
-    { id: 'ORD101', items: 5, driver: 'Khalid Ibrahim', driverId: 'D001', status: 'Pending', customer: 'Ali Ahmed', address: '123 Main St' },
-    { id: 'ORD102', items: 3, driver: 'Noura Saad', driverId: 'D002', status: 'Pending', customer: 'Fatima Khan', address: '456 Park Ave' },
+  incoming: [
+    { 
+        id: 'ORD100', 
+        items: 2, 
+        status: 'Incoming', 
+        customer: 'Zainab Ali', 
+        address: '123 Palm St', 
+        requiresPrescription: true, 
+        prescriptionUrl: 'https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/e2e8f0/94a3b8?text=Rx+Image',
+        orderItems: [{name: 'Antibiotic X', qty: 1}, {name: 'Painkiller Y', qty: 1}],
+        timestamp: 'Just now'
+    },
+    { 
+        id: 'ORD101', 
+        items: 5, 
+        status: 'Incoming', 
+        customer: 'Ali Ahmed', 
+        address: '123 Main St', 
+        requiresPrescription: false,
+        orderItems: [{name: 'Shampoo', qty: 2}, {name: 'Soap', qty: 3}],
+        timestamp: '5 mins ago'
+    },
+  ],
+  processing: [
+    { id: 'ORD102', items: 3, status: 'Processing', customer: 'Fatima Khan', address: '456 Park Ave', orderItems: [{name: 'Vitamin C', qty: 3}] },
   ],
   ready: [
-    { id: 'ORD103', items: 8, driver: 'Aisha Al-Ghamdi', driverId: 'D004', status: 'Ready for Pickup', customer: 'Yusuf Ibrahim', address: '789 Oak Rd' },
-    { id: 'ORD105', items: 2, driver: 'Sami Al-Johani', driverId: 'D008', status: 'Ready for Pickup', customer: 'Layla Faisal', address: '101 Pine Ln' },
+    { id: 'ORD103', items: 8, driver: 'Aisha Al-Ghamdi', driverId: 'D004', status: 'Ready for Pickup', customer: 'Yusuf Ibrahim', address: '789 Oak Rd', orderItems: [{name: 'Bandages', qty: 8}] },
+    { id: 'ORD105', items: 2, driver: 'Unassigned', driverId: null, status: 'Ready for Pickup', customer: 'Layla Faisal', address: '101 Pine Ln', orderItems: [{name: 'Cream', qty: 2}] },
   ],
   outForDelivery: [
-    { id: 'ORD107', items: 1, driver: 'Khalid Ibrahim', driverId: 'D001', status: 'Out for Delivery', handoverTime: new Date(Date.now() - 3600000).toISOString(), handoverVerifiedBy: 'SI001', eta: '15 min', customer: 'Hassan Ali', address: '212 Maple Dr', phone: '966501112233', orderItems: [{name: 'Panadol Extra', qty: 1}, {name: 'Vitamin C', qty: 1}] },
+    { id: 'ORD107', items: 1, driver: 'Khalid Ibrahim', driverId: 'D001', status: 'Out for Delivery', handoverTime: new Date(Date.now() - 3600000).toISOString(), handoverVerifiedBy: 'SI001', eta: '15 min', customer: 'Hassan Ali', address: '212 Maple Dr', phone: '966501112233', orderItems: [{name: 'Panadol Extra', qty: 1}] },
   ],
-  delivered: [
+  history: [ // Combined Delivered and Cancelled/Refunded
     { id: 'ORD109', items: 4, driver: 'Noura Saad', driverId: 'D002', status: 'Delivered', customer: 'Sara Abdullah', address: '333 Elm St' },
-  ],
-  canceled: [
-    { id: 'ORD110', items: 1, driver: 'N/A', driverId: null, status: 'Canceled', customer: 'Omar Rashid', address: '444 Birch Ave' },
+    { id: 'ORD110', items: 1, driver: 'N/A', driverId: null, status: 'Refunded', customer: 'Omar Rashid', address: '444 Birch Ave', refundStatus: 'Processed', rejectionReason: 'Item Out of Stock' },
   ]
 };
-
-
-const initialArrivalAlerts = [
-  { driver: 'Aisha Al-Ghamdi', orderId: 'ORD103', time: 'Just now' },
-  { driver: 'Sami Al-Johani', orderId: 'ORD105', time: '2m ago' },
-];
 
 const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '' },
@@ -49,48 +63,75 @@ const navigation = [
 
 function StoreInchargeDashboard() {
   const [orders, setOrders] = useState(initialOrdersData);
-  const [arrivalAlerts, setArrivalAlerts] = useState(initialArrivalAlerts);
+  const [arrivalAlerts, setArrivalAlerts] = useState([]);
 
+  // 1. Accept Order (Incoming -> Processing)
+  const handleAcceptOrder = (orderId) => {
+    const order = orders.incoming.find(o => o.id === orderId);
+    if (order) {
+        setOrders(prev => ({
+            ...prev,
+            incoming: prev.incoming.filter(o => o.id !== orderId),
+            processing: [{ ...order, status: 'Processing' }, ...prev.processing]
+        }));
+    }
+  };
+
+  // 2. Reject Order (Incoming -> History/Refunded)
+  const handleRejectOrder = (orderId, reason, notes) => {
+    const order = orders.incoming.find(o => o.id === orderId);
+    if (order) {
+        setOrders(prev => ({
+            ...prev,
+            incoming: prev.incoming.filter(o => o.id !== orderId),
+            history: [{ 
+                ...order, 
+                status: 'Refunded', 
+                refundStatus: 'Processed', 
+                rejectionReason: reason,
+                notes 
+            }, ...prev.history]
+        }));
+    }
+  };
+
+  // 3. Mark as Ready (Processing -> Ready)
   const handleMarkAsReady = (orderId) => {
-    const orderToMove = orders.pending.find(o => o.id === orderId);
-    if (orderToMove) {
+    const order = orders.processing.find(o => o.id === orderId);
+    if (order) {
       setOrders(prev => ({
         ...prev,
-        pending: prev.pending.filter(o => o.id !== orderId),
-        ready: [{ ...orderToMove, status: 'Ready for Pickup' }, ...prev.ready],
+        processing: prev.processing.filter(o => o.id !== orderId),
+        ready: [{ ...order, status: 'Ready for Pickup', driver: 'Unassigned' }, ...prev.ready],
       }));
     }
   };
 
+  // 4. Handover (Ready -> Out for Delivery)
   const handleHandoverConfirm = (orderId) => {
-    const orderToMove = orders.ready.find(o => o.id === orderId);
-    if (orderToMove) {
+    const order = orders.ready.find(o => o.id === orderId);
+    if (order) {
       const handoverTime = new Date().toISOString();
-      const handoverVerifiedBy = 'SI001'; // Hardcoded Store Incharge ID
-
       setOrders(prev => ({
         ...prev,
         ready: prev.ready.filter(o => o.id !== orderId),
         outForDelivery: [{
-          ...orderToMove,
+          ...order,
           status: 'Out for Delivery',
           handoverTime,
-          handoverVerifiedBy,
-          eta: `${Math.floor(Math.random() * 20) + 10} min`,
-          orderItems: [{name: 'Panadol Extra', qty: 1}, {name: 'Vitamin C', qty: 1}, {name: 'Aspirin', qty: 2}], // Add more mock items
+          handoverVerifiedBy: 'SI001',
+          eta: '20 min',
         }, ...prev.outForDelivery],
       }));
-
-      setArrivalAlerts(prev => prev.filter(alert => alert.orderId !== orderId));
-      console.log(`AUDIT: Order ${orderId} handed over. Time: ${handoverTime}, Verified by: ${handoverVerifiedBy}`);
     }
   };
 
+  // Stats for Overview
   const stats = {
-    pending: orders.pending.length,
+    pending: orders.incoming.length + orders.processing.length,
     ongoing: orders.outForDelivery.length,
-    delivered: orders.delivered.length,
-    cancelled: orders.canceled.length,
+    delivered: orders.history.filter(o => o.status === 'Delivered').length,
+    cancelled: orders.history.filter(o => o.status === 'Refunded' || o.status === 'Canceled').length,
   };
 
   return (
@@ -106,6 +147,8 @@ function StoreInchargeDashboard() {
           element={
             <OrderManagement
               orders={orders}
+              onAccept={handleAcceptOrder}
+              onReject={handleRejectOrder}
               onMarkAsReady={handleMarkAsReady}
               onHandoverConfirm={handleHandoverConfirm}
             />
