@@ -3,15 +3,41 @@ import { useNavigate } from 'react-router-dom';
 import DataTable from '../../components/Tables/DataTable';
 import { Plus, Edit, Eye, MoreVertical } from 'lucide-react';
 import { deliveryManagementData } from '../../data/mockData';
+import ManageDeliveryPersonModal from './delivery/ManageDeliveryPersonModal';
 
 function DeliveryManagement() {
-    const [deliveries] = useState(deliveryManagementData);
+    const [deliveries, setDeliveries] = useState(deliveryManagementData);
     const [openActionMenu, setOpenActionMenu] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedPerson, setSelectedPerson] = useState(null);
     const navigate = useNavigate();
+
+    const handleAddClick = () => {
+        setSelectedPerson(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEditClick = (person) => {
+        setSelectedPerson(person);
+        setIsModalOpen(true);
+        setOpenActionMenu(null);
+    };
+
+    const handleSaveDeliveryPerson = (personData) => {
+        if (selectedPerson) {
+            // Edit existing
+            setDeliveries(prev => prev.map(p => p.id === personData.id ? personData : p));
+        } else {
+            // Add new
+            setDeliveries(prev => [personData, ...prev]);
+        }
+        setIsModalOpen(false);
+    };
 
     const columns = [
         { header: 'ID', accessor: 'id' },
         { header: 'Name', accessor: 'name' },
+        { header: 'Profession', accessor: 'profession', render: (row) => row.profession || 'Driver' },
         { header: 'National ID', accessor: 'national_id' },
         { 
             header: 'Status', 
@@ -48,15 +74,6 @@ function DeliveryManagement() {
                 </div>
             )
         },
-        { 
-            header: 'Last Location', 
-            render: (row) => (
-                <div className="text-xs">
-                    <p>{row.current_latitude}, {row.current_longitude}</p>
-                    <p className="text-gray-400">{new Date(row.last_location_update).toLocaleString()}</p>
-                </div>
-            )
-        },
         {
             header: 'Actions',
             render: (row) => (
@@ -74,7 +91,7 @@ function DeliveryManagement() {
                                 <span>View Details</span>
                             </button>
                             <button 
-                                onClick={() => navigate(`/super-admin/delivery-management/edit/${row.id}`)} 
+                                onClick={() => handleEditClick(row)} 
                                 className="w-full text-left flex items-center space-x-2 px-4 py-2 text-sm text-taiba-gray hover:bg-gray-50"
                             >
                                 <Edit className="w-4 h-4" />
@@ -88,22 +105,31 @@ function DeliveryManagement() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                <div>
-                    <h2 className="text-xl font-bold text-taiba-gray mb-1">Delivery Management</h2>
-                    <p className="text-sm text-taiba-gray">Manage delivery personnel, verifications, and status.</p>
+        <>
+            <div className="space-y-6">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                    <div>
+                        <h2 className="text-xl font-bold text-taiba-gray mb-1">Delivery Management</h2>
+                        <p className="text-sm text-taiba-gray">Manage delivery personnel, verifications, and status.</p>
+                    </div>
+                    <button onClick={handleAddClick} className="flex items-center space-x-2 btn-primary px-6 py-2.5">
+                        <Plus className="w-5 h-5" />
+                        <span>Add Delivery Person</span>
+                    </button>
                 </div>
-                <button onClick={() => navigate('/super-admin/delivery-management/add')} className="flex items-center space-x-2 btn-primary px-6 py-2.5">
-                    <Plus className="w-5 h-5" />
-                    <span>Add Delivery Person</span>
-                </button>
+
+                <div className="bg-white rounded-xl shadow-md">
+                    <DataTable columns={columns} data={deliveries} />
+                </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md">
-                <DataTable columns={columns} data={deliveries} />
-            </div>
-        </div>
+            <ManageDeliveryPersonModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                person={selectedPerson}
+                onSave={handleSaveDeliveryPerson}
+            />
+        </>
     );
 }
 
