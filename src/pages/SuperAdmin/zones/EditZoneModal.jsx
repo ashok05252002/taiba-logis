@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/common/Modal';
+import { ChevronDown } from 'lucide-react';
+import { allStores } from '../../../data/mockData';
 
 function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
   const [formData, setFormData] = useState({ name: '', region: '', adminId: '', subClusters: '' });
+  const [selectedStores, setSelectedStores] = useState([]);
+  const [isStoreDropdownOpen, setIsStoreDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (zone) {
@@ -12,6 +16,7 @@ function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
         adminId: zone.adminId,
         subClusters: zone.subClusters ? zone.subClusters.join(', ') : '',
       });
+      setSelectedStores(zone.stores || []);
     }
   }, [zone]);
 
@@ -22,6 +27,14 @@ function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const toggleStore = (storeName) => {
+    setSelectedStores(prev => 
+      prev.includes(storeName) 
+        ? prev.filter(s => s !== storeName) 
+        : [...prev, storeName]
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const selectedAdmin = admins.find(a => a.id === formData.adminId);
@@ -30,6 +43,7 @@ function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
       ...formData,
       admin: selectedAdmin ? selectedAdmin.name : 'Unassigned',
       subClusters: formData.subClusters.split(',').map(c => c.trim()).filter(Boolean),
+      stores: selectedStores,
     });
   };
 
@@ -54,6 +68,40 @@ function EditZoneModal({ isOpen, onClose, zone, onSave, admins }) {
             ))}
           </select>
         </div>
+
+        {/* Multi-select for Stores */}
+        <div>
+            <label className="block text-sm font-medium text-taiba-gray mb-2">Assign Stores</label>
+            <div className="relative">
+                <button 
+                    type="button" 
+                    className="input-field text-left flex justify-between items-center bg-white"
+                    onClick={() => setIsStoreDropdownOpen(!isStoreDropdownOpen)}
+                >
+                    <span className="truncate text-gray-700">
+                        {selectedStores.length > 0 ? selectedStores.join(', ') : 'Select stores...'}
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                </button>
+                {isStoreDropdownOpen && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                        {allStores.map(store => (
+                            <div key={store.id} className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer" onClick={() => toggleStore(store.name)}>
+                                <input 
+                                    type="checkbox" 
+                                    checked={selectedStores.includes(store.name)} 
+                                    readOnly
+                                    className="mr-3 h-4 w-4 text-taiba-blue rounded focus:ring-taiba-blue pointer-events-none"
+                                />
+                                <span className="text-sm text-gray-700">{store.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">{selectedStores.length} stores selected.</p>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-taiba-gray mb-2">Define Areas/Sub-clusters</label>
           <textarea name="subClusters" className="input-field" rows="3" value={formData.subClusters} onChange={handleChange}></textarea>

@@ -22,6 +22,17 @@ export const allDrivers = [
     { id: 'D002', name: 'Noura Saad', cluster: 'South Cluster', status: 'Inactive', phone: '966507890123', vehicle: 'Car' },
 ];
 
+export const allStores = [
+    { id: 'S001', name: 'Taiba Pharmacy - Main Branch', location: 'Riyadh' },
+    { id: 'S002', name: 'Taiba Pharmacy - Westside', location: 'Jeddah' },
+    { id: 'S003', name: 'Taiba Pharmacy - East Coast', location: 'Dammam' },
+    { id: 'S004', name: 'Taiba Pharmacy - Central', location: 'Riyadh' },
+    { id: 'S005', name: 'Taiba Pharmacy - Airport Rd', location: 'Jeddah' },
+    { id: 'S006', name: 'Taiba Pharmacy - Downtown', location: 'Mecca' },
+    { id: 'S007', name: 'Taiba Pharmacy - North', location: 'Riyadh' },
+    { id: 'S008', name: 'Taiba Pharmacy - South', location: 'Jeddah' },
+];
+
 export const deliveryManagementData = [
     {
         id: 'DM001',
@@ -276,7 +287,7 @@ export const allProducts = [
         name: 'Panadol Extra', 
         description: '24 Tablets', 
         price: 'OMR 1.50', 
-        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/108BFA/FFFFFF/png?text=Panadol', 
+        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/108BFA/FFFFFF/png?text=Panadol', 
         category: 'Medicines',
         requiresPrescription: true,
         longDescription: 'Panadol Extra with Optizorb is a paracetamol-based analgesic that provides fast, effective relief from tough pain, including headaches, migraines, and dental pain. The Optizorb formulation allows for faster absorption.',
@@ -288,7 +299,7 @@ export const allProducts = [
         name: 'Vitamin C 1000mg', 
         description: '30 Effervescent Tablets', 
         price: 'OMR 4.55', 
-        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/732675/FFFFFF/png?text=Vitamin+C', 
+        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/732675/FFFFFF/png?text=Vitamin+C', 
         category: 'Wellness',
         requiresPrescription: false,
         longDescription: 'A high-strength Vitamin C supplement to support the immune system and reduce fatigue. Dissolves in water to make a refreshing orange-flavored drink.',
@@ -300,7 +311,7 @@ export const allProducts = [
         name: 'Nivea Sunscreen SPF50', 
         description: '200ml', 
         price: 'OMR 7.50', 
-        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/f59e0b/FFFFFF/png?text=Sunscreen', 
+        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/f59e0b/FFFFFF/png?text=Sunscreen', 
         category: 'Personal Care',
         requiresPrescription: false,
         longDescription: 'Provides highly effective UVA/UVB protection and supports the skin\'s protection from the inside with antioxidant Vitamin E. The caring formula is water-resistant.',
@@ -312,7 +323,7 @@ export const allProducts = [
         name: 'BabyJoy Diapers #4', 
         description: 'Jumbo Pack', 
         price: 'OMR 8.90', 
-        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/10b981/FFFFFF/png?text=Diapers', 
+        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/10b981/FFFFFF/png?text=Diapers', 
         category: 'Baby Care',
         requiresPrescription: false,
         longDescription: 'BabyJoy diapers provide comfort and dryness for your baby. With a compressed diamond pad for high absorbency and a soft cotton touch.',
@@ -324,7 +335,7 @@ export const allProducts = [
         name: 'Omron BP Monitor', 
         description: 'Automatic Arm Monitor', 
         price: 'OMR 25.00', 
-        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/ef4444/FFFFFF/png?text=BP+Monitor', 
+        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/ef4444/FFFFFF/png?text=BP+Monitor', 
         category: 'Devices',
         requiresPrescription: false,
         longDescription: 'The Omron M3 Comfort is a clinically validated blood pressure monitor that makes it easy to keep track of your hypertension at home. With Intelli Wrap Cuff technology for accurate readings.',
@@ -336,7 +347,7 @@ export const allProducts = [
         name: 'Cetaphil Cleanser', 
         description: 'Gentle Skin Cleanser 250ml', 
         price: 'OMR 6.00', 
-        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/3b82f6/FFFFFF/png?text=Cleanser', 
+        image: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/3b82f6/FFFFFF/png?text=Cleanser', 
         category: 'Personal Care',
         requiresPrescription: false,
         longDescription: 'A mild, non-irritating formulation that soothes skin as it cleans. In fact, it\'s gentle enough for a baby\'s delicate skin. Designed specifically to work for all skin types.',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '../../../components/common/Modal';
-import { MapPin, User, Users, Puzzle, CheckCircle, XCircle, Calendar, UserCog, Truck, Phone, Mail } from 'lucide-react';
+import { MapPin, User, Users, Puzzle, CheckCircle, XCircle, Calendar, UserCog, Truck, Phone, Mail, Store } from 'lucide-react';
 import { allUsers, allDrivers } from '../../../data/mockData';
 
 function ViewZoneDetailsModal({ isOpen, onClose, zone }) {
@@ -45,6 +45,17 @@ function ViewZoneDetailsModal({ isOpen, onClose, zone }) {
               {zone.status}
             </span>
           </div>
+        </div>
+        <div>
+            <h4 className="font-semibold text-taiba-gray mb-2 flex items-center space-x-2">
+                <Store className="w-5 h-5 text-taiba-purple" />
+                <span>Assigned Stores ({zone.stores ? zone.stores.length : 0})</span>
+            </h4>
+            <div className="flex flex-wrap gap-2">
+                {zone.stores && zone.stores.length > 0 ? zone.stores.map(s => (
+                    <span key={s} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium border border-blue-100">{s}</span>
+                )) : <p className="text-sm text-gray-500">No stores assigned to this cluster.</p>}
+            </div>
         </div>
         <div>
             <h4 className="font-semibold text-taiba-gray mb-2 flex items-center space-x-2">
