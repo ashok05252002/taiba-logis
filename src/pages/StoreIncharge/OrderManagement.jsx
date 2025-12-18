@@ -3,34 +3,54 @@ import { Package, Truck, CheckCircle, Clock, Inbox, AlertCircle, FileText, User,
 import HandoverModal from './components/HandoverModal';
 import PrescriptionVerificationModal from './components/PrescriptionVerificationModal';
 import StoreRejectModal from './components/StoreRejectModal';
+import ViewOrderModal from './components/ViewOrderModal';
 
 const tabs = [
-  { id: 'incoming', label: 'Incoming', icon: Inbox, color: 'text-blue-600' },
+  { id: 'pending', label: 'Pending', icon: Inbox, color: 'text-blue-600' },
   { id: 'processing', label: 'Processing', icon: Clock, color: 'text-orange-600' },
-  { id: 'ready', label: 'Ready for Pickup', icon: Package, color: 'text-purple-600' },
-  { id: 'outForDelivery', label: 'Dispatched', icon: Truck, color: 'text-indigo-600' },
   { id: 'history', label: 'History', icon: CheckCircle, color: 'text-gray-600' },
 ];
 
 function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandoverConfirm }) {
-  const [activeTab, setActiveTab] = useState('incoming');
+  const [activeTab, setActiveTab] = useState('pending');
   
   // Modal States
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isPrescriptionModalOpen, setIsPrescriptionModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isHandoverModalOpen, setIsHandoverModalOpen] = useState(false);
+  const [isViewOrderModalOpen, setIsViewOrderModalOpen] = useState(false);
 
   // Handlers
-  const handleVerifyClick = (order) => {
+  const handleOrderClick = (order) => {
+    // Allow viewing details for Pending and History tabs
+    if (activeTab === 'pending' || activeTab === 'history') {
+        setSelectedOrder(order);
+        setIsViewOrderModalOpen(true);
+    }
+  };
+
+  const handleVerifyClick = (e, order) => {
+    e.stopPropagation();
     setSelectedOrder(order);
     setIsPrescriptionModalOpen(true);
   };
 
-  const handleRejectClick = (order) => {
+  const handleRejectClick = (e, order) => {
+    e.stopPropagation();
     setSelectedOrder(order);
     setIsPrescriptionModalOpen(false); // Close prescription modal if open
     setIsRejectModalOpen(true);
+  };
+
+  const handleAcceptClick = (e, orderId) => {
+    e.stopPropagation();
+    onAccept(orderId);
+  };
+
+  const handleMarkAsReadyClick = (e, orderId) => {
+    e.stopPropagation();
+    onMarkAsReady(orderId);
   };
 
   const handleConfirmReject = (reason, notes) => {
@@ -45,21 +65,13 @@ function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandover
     setSelectedOrder(null);
   };
 
-  const handleHandoverClick = (order) => {
-    setSelectedOrder(order);
-    setIsHandoverModalOpen(true);
-  };
-
-  const handleConfirmHandover = () => {
-    onHandoverConfirm(selectedOrder.id);
-    setIsHandoverModalOpen(false);
-    setSelectedOrder(null);
-  };
-
   const currentOrders = orders[activeTab] || [];
 
   const OrderCard = ({ order }) => (
-    <div className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all">
+    <div 
+        onClick={() => handleOrderClick(order)}
+        className={`bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all ${activeTab !== 'processing' ? 'cursor-pointer hover:border-taiba-blue' : ''}`}
+    >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         
         {/* Left: Order Info */}
@@ -83,7 +95,7 @@ function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandover
                     <Package className="w-4 h-4 text-gray-400" />
                     <span>{order.items} Items</span>
                 </div>
-                {activeTab !== 'incoming' && order.driver && (
+                {activeTab !== 'pending' && order.driver && (
                     <div className="flex items-center space-x-2 sm:col-span-2 mt-1">
                         <Truck className="w-4 h-4 text-taiba-blue" />
                         <span className={order.driver === 'Unassigned' ? 'text-orange-500 font-medium' : 'text-gray-800 font-medium'}>
@@ -97,26 +109,26 @@ function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandover
         {/* Right: Actions */}
         <div className="flex items-center justify-end space-x-3">
             
-            {/* INCOMING ACTIONS */}
-            {activeTab === 'incoming' && (
+            {/* PENDING ACTIONS */}
+            {activeTab === 'pending' && (
                 <>
                     {order.requiresPrescription ? (
                         <button 
-                            onClick={() => handleVerifyClick(order)}
+                            onClick={(e) => handleVerifyClick(e, order)}
                             className="bg-purple-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 shadow-sm flex items-center"
                         >
                             <FileText className="w-4 h-4 mr-2" /> Verify Prescription
                         </button>
                     ) : (
                         <button 
-                            onClick={() => onAccept(order.id)}
+                            onClick={(e) => handleAcceptClick(e, order.id)}
                             className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-green-700 shadow-sm"
                         >
                             Accept Order
                         </button>
                     )}
                     <button 
-                        onClick={() => handleRejectClick(order)}
+                        onClick={(e) => handleRejectClick(e, order)}
                         className="border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-50"
                     >
                         Reject
@@ -127,37 +139,11 @@ function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandover
             {/* PROCESSING ACTIONS */}
             {activeTab === 'processing' && (
                 <button 
-                    onClick={() => onMarkAsReady(order.id)}
+                    onClick={(e) => handleMarkAsReadyClick(e, order.id)}
                     className="bg-taiba-blue text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 shadow-sm flex items-center"
                 >
                     Mark as Ready <ChevronRight className="w-4 h-4 ml-1" />
                 </button>
-            )}
-
-            {/* READY ACTIONS */}
-            {activeTab === 'ready' && (
-                <>
-                    {order.driver === 'Unassigned' ? (
-                        <button className="border border-orange-300 text-orange-600 bg-orange-50 px-4 py-2 rounded-lg text-sm font-medium flex items-center">
-                            <UserPlus className="w-4 h-4 mr-2" /> Assign Driver
-                        </button>
-                    ) : (
-                        <button 
-                            onClick={() => handleHandoverClick(order)}
-                            className="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm flex items-center"
-                        >
-                            Handover to Driver
-                        </button>
-                    )}
-                </>
-            )}
-
-            {/* DISPATCHED STATUS */}
-            {activeTab === 'outForDelivery' && (
-                <div className="text-right">
-                    <span className="block text-sm font-bold text-indigo-600">On the Way</span>
-                    <span className="text-xs text-gray-500">Picked up {new Date(order.handoverTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                </div>
             )}
 
             {/* HISTORY STATUS */}
@@ -183,7 +169,7 @@ function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandover
       <div className="space-y-6">
         <div>
           <h2 className="text-xl font-bold text-taiba-gray mb-1">Order Management</h2>
-          <p className="text-sm text-taiba-gray">Manage incoming orders, verification, and dispatch.</p>
+          <p className="text-sm text-taiba-gray">Manage pending orders and processing.</p>
         </div>
 
         {/* Tabs */}
@@ -239,7 +225,7 @@ function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandover
         onClose={() => setIsPrescriptionModalOpen(false)}
         order={selectedOrder}
         onVerify={handleConfirmVerify}
-        onReject={() => handleRejectClick(selectedOrder)}
+        onReject={() => handleRejectClick(null, selectedOrder)} // Pass null event since it's called from modal
       />
 
       <StoreRejectModal
@@ -251,7 +237,13 @@ function OrderManagement({ orders, onAccept, onReject, onMarkAsReady, onHandover
       <HandoverModal
         isOpen={isHandoverModalOpen}
         onClose={() => setIsHandoverModalOpen(false)}
-        onConfirm={handleConfirmHandover}
+        onConfirm={() => {}} // Not used in this simplified flow but kept for component integrity
+        order={selectedOrder}
+      />
+
+      <ViewOrderModal
+        isOpen={isViewOrderModalOpen}
+        onClose={() => setIsViewOrderModalOpen(false)}
         order={selectedOrder}
       />
     </>

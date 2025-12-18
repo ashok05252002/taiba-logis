@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import MobileLayout from '../../components/Layout/MobileLayout';
-import { Home, Package, User, Clock } from 'lucide-react';
+import { Home, Package, User } from 'lucide-react';
 import DriverDashboard from './DriverDashboard';
 import DriverLogin from './DriverLogin';
-import ShiftPage from './ShiftPage';
 import OrderHistory from './OrderHistory';
 import ProfilePage from './ProfilePage';
 
@@ -134,7 +133,6 @@ function DriverApp() {
   const bottomNavItems = [
     { icon: Home, label: 'Home', path: '/driver' },
     { icon: Package, label: 'Orders', path: '/driver/orders' },
-    { icon: Clock, label: 'Shift', path: '/driver/shift' },
     { icon: User, label: 'Profile', path: '/driver/profile' },
   ];
 
@@ -142,7 +140,7 @@ function DriverApp() {
     <button
       key={item.label}
       onClick={() => navigate(item.path)}
-      className={`flex flex-col items-center space-y-1 py-2 px-4 transition-colors w-1/4 ${
+      className={`flex flex-col items-center space-y-1 py-2 px-4 transition-colors w-1/3 ${
         location.pathname === item.path ? 'text-taiba-blue' : 'text-taiba-gray hover:text-taiba-blue'
       }`}
     >
@@ -171,7 +169,6 @@ function DriverApp() {
           } 
         />
         <Route path="/orders" element={<OrderHistory orders={completedOrders} />} />
-        <Route path="/shift" element={<ShiftPage history={shiftHistory} />} />
         <Route path="/profile" element={<ProfilePage profile={driverProfile} onUpdateProfile={handleUpdateProfile} onLogout={handleLogout} />} />
       </Routes>
     </MobileLayout>

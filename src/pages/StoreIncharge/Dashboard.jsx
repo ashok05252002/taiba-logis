@@ -12,31 +12,33 @@ import SecurityAudit from './SecurityAudit';
 import OrderDetailPage from './components/OrderDetailPage';
 
 const initialOrdersData = {
-  incoming: [
+  pending: [
     { 
         id: 'ORD100', 
         items: 2, 
-        status: 'Incoming', 
+        status: 'Pending', 
         customer: 'Zainab Ali', 
         address: '123 Palm St', 
+        phone: '966501234567',
         requiresPrescription: true, 
-        prescriptionUrl: 'https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/e2e8f0/94a3b8?text=Rx+Image',
+        prescriptionUrl: 'https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/400x300/e2e8f0/94a3b8?text=Rx+Image',
         orderItems: [{name: 'Antibiotic X', qty: 1}, {name: 'Painkiller Y', qty: 1}],
         timestamp: 'Just now'
     },
     { 
         id: 'ORD101', 
         items: 5, 
-        status: 'Incoming', 
+        status: 'Pending', 
         customer: 'Ali Ahmed', 
         address: '123 Main St', 
+        phone: '966509876543',
         requiresPrescription: false,
         orderItems: [{name: 'Shampoo', qty: 2}, {name: 'Soap', qty: 3}],
         timestamp: '5 mins ago'
     },
   ],
   processing: [
-    { id: 'ORD102', items: 3, status: 'Processing', customer: 'Fatima Khan', address: '456 Park Ave', orderItems: [{name: 'Vitamin C', qty: 3}] },
+    { id: 'ORD102', items: 3, status: 'Processing', customer: 'Fatima Khan', address: '456 Park Ave', phone: '966505554444', orderItems: [{name: 'Vitamin C', qty: 3}], timestamp: '10 mins ago' },
   ],
   ready: [
     { id: 'ORD103', items: 8, driver: 'Aisha Al-Ghamdi', driverId: 'D004', status: 'Ready for Pickup', customer: 'Yusuf Ibrahim', address: '789 Oak Rd', orderItems: [{name: 'Bandages', qty: 8}] },
@@ -46,8 +48,8 @@ const initialOrdersData = {
     { id: 'ORD107', items: 1, driver: 'Khalid Ibrahim', driverId: 'D001', status: 'Out for Delivery', handoverTime: new Date(Date.now() - 3600000).toISOString(), handoverVerifiedBy: 'SI001', eta: '15 min', customer: 'Hassan Ali', address: '212 Maple Dr', phone: '966501112233', orderItems: [{name: 'Panadol Extra', qty: 1}] },
   ],
   history: [ // Combined Delivered and Cancelled/Refunded
-    { id: 'ORD109', items: 4, driver: 'Noura Saad', driverId: 'D002', status: 'Delivered', customer: 'Sara Abdullah', address: '333 Elm St' },
-    { id: 'ORD110', items: 1, driver: 'N/A', driverId: null, status: 'Refunded', customer: 'Omar Rashid', address: '444 Birch Ave', refundStatus: 'Processed', rejectionReason: 'Item Out of Stock' },
+    { id: 'ORD109', items: 4, driver: 'Noura Saad', driverId: 'D002', status: 'Delivered', customer: 'Sara Abdullah', address: '333 Elm St', timestamp: 'Yesterday' },
+    { id: 'ORD110', items: 1, driver: 'N/A', driverId: null, status: 'Refunded', customer: 'Omar Rashid', address: '444 Birch Ave', refundStatus: 'Processed', rejectionReason: 'Item Out of Stock', timestamp: '2 days ago' },
   ]
 };
 
@@ -65,25 +67,25 @@ function StoreInchargeDashboard() {
   const [orders, setOrders] = useState(initialOrdersData);
   const [arrivalAlerts, setArrivalAlerts] = useState([]);
 
-  // 1. Accept Order (Incoming -> Processing)
+  // 1. Accept Order (Pending -> Processing)
   const handleAcceptOrder = (orderId) => {
-    const order = orders.incoming.find(o => o.id === orderId);
+    const order = orders.pending.find(o => o.id === orderId);
     if (order) {
         setOrders(prev => ({
             ...prev,
-            incoming: prev.incoming.filter(o => o.id !== orderId),
+            pending: prev.pending.filter(o => o.id !== orderId),
             processing: [{ ...order, status: 'Processing' }, ...prev.processing]
         }));
     }
   };
 
-  // 2. Reject Order (Incoming -> History/Refunded)
+  // 2. Reject Order (Pending -> History/Refunded)
   const handleRejectOrder = (orderId, reason, notes) => {
-    const order = orders.incoming.find(o => o.id === orderId);
+    const order = orders.pending.find(o => o.id === orderId);
     if (order) {
         setOrders(prev => ({
             ...prev,
-            incoming: prev.incoming.filter(o => o.id !== orderId),
+            pending: prev.pending.filter(o => o.id !== orderId),
             history: [{ 
                 ...order, 
                 status: 'Refunded', 
@@ -95,7 +97,9 @@ function StoreInchargeDashboard() {
     }
   };
 
-  // 3. Mark as Ready (Processing -> Ready)
+  // 3. Mark as Ready (Processing -> Ready/History)
+  // Since "Ready" tab is removed, we move it to 'ready' state data (simulating automatic flow) 
+  // or 'history' if we want it visible there. For now, let's keep it in 'ready' data bucket but invisible in tabs.
   const handleMarkAsReady = (orderId) => {
     const order = orders.processing.find(o => o.id === orderId);
     if (order) {
@@ -107,7 +111,7 @@ function StoreInchargeDashboard() {
     }
   };
 
-  // 4. Handover (Ready -> Out for Delivery)
+  // 4. Handover (Ready -> Out for Delivery) - Kept for logic completeness if needed later
   const handleHandoverConfirm = (orderId) => {
     const order = orders.ready.find(o => o.id === orderId);
     if (order) {
@@ -128,7 +132,7 @@ function StoreInchargeDashboard() {
 
   // Stats for Overview
   const stats = {
-    pending: orders.incoming.length + orders.processing.length,
+    pending: orders.pending.length + orders.processing.length,
     ongoing: orders.outForDelivery.length,
     delivered: orders.history.filter(o => o.status === 'Delivered').length,
     cancelled: orders.history.filter(o => o.status === 'Refunded' || o.status === 'Canceled').length,

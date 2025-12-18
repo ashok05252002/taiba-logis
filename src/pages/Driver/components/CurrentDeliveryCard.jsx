@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation, Package, CheckCircle, Phone, ExternalLink, ShieldCheck, Camera, Edit } from 'lucide-react';
+import { MapPin, Navigation, Package, CheckCircle, Phone, ExternalLink, ShieldCheck, Camera } from 'lucide-react';
 
 const arrivalPin = '1234';
 
@@ -11,10 +11,6 @@ function ProofOfDelivery({ onComplete }) {
                 <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-taiba-purple text-taiba-purple rounded-lg font-medium text-sm hover:bg-taiba-purple hover:text-white transition-all">
                     <Camera className="w-4 h-4" />
                     <span>Upload Photo</span>
-                </button>
-                <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-taiba-purple text-taiba-purple rounded-lg font-medium text-sm hover:bg-taiba-purple hover:text-white transition-all">
-                    <Edit className="w-4 h-4" />
-                    <span>Get Signature</span>
                 </button>
             </div>
             <button onClick={onComplete} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-green-600 transition-all flex items-center justify-center space-x-2">
